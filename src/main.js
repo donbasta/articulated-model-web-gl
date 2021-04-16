@@ -3,11 +3,9 @@ let program;
 
 // create gl context and program when the page loads
 const start = () => {
-
-    console.log("test masuk");
-
     canvas = document.getElementById("draw-shape");
-    gl = canvas.getContext("experimental-webgl");
+    gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(0.8, 0.8, 0.8, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
@@ -54,16 +52,16 @@ const createProgram = (gl, vertexId, fragmentId) => {
     let vertexShader = initShader(gl, vertexId);
     let fragmentShader = initShader(gl, fragmentId);
 
-    let program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
+    let prog = gl.createProgram();
+    gl.attachShader(prog, vertexShader);
+    gl.attachShader(prog, fragmentShader);
+    gl.linkProgram(prog);
 
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        throw ("Failed to link " + gl.getProgramInfoLog(program));
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+        throw ("Failed to link " + gl.getProgramInfoLog(prog));
     }
 
-    return program;
+    return prog;
 }
 
 // render all shape into canvas
@@ -71,13 +69,11 @@ const render = () => {
     gl.clearColor(0.8, 0.8, 0.8, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    const identityMat = identityMatrix(4);
-    const mat = gl.getUniformLocation(program, "formMatrix");
-
     gl.useProgram(program);
-    gl.uniformMatrix4fv(mat, false, identityMat);
 
-    test();
+    for (const obj of objectList) {
+        obj.draw();
+    }
 }
 
 const test2 = () => {
@@ -89,7 +85,7 @@ const test1 = () => {
 
     console.log("tesuto");
 
-    const glObject = new GLObject("kubus 1", program, gl);
+    const glObject = new GLObject("kubus 1", gl, program);
     glObject.setVertexArray(testData1)
     glObject.setAnchorPoint([0, 0, 0], 3);
     glObject.setPosition(200, 200, 0);
@@ -97,13 +93,13 @@ const test1 = () => {
     glObject.setScale(1, 1, 1);
     glObject.bind();
 
-    const glObject2 = new GLObject("kubus 2", shaderProgram, gl);
-    glObject2.setVertexArray(testData1);
-    glObject2.setAnchorPoint([100,100,100], 3);
-    glObject2.setPosition(0,0,0);
-    glObject2.setRotation(0,0,0);
-    glObject2.setScale(1,1,1);
-    glObject2.bind();
+    // const glObject2 = new GLObject("kubus 2", gl, program);
+    // glObject2.setVertexArray(testData1);
+    // glObject2.setAnchorPoint([100,100,100], 3);
+    // glObject2.setPosition(0,0,0);
+    // glObject2.setRotation(0,0,0);
+    // glObject2.setScale(1,1,1);
+    // glObject2.bind();
 
     // const glObject3 = new GLObject(2, shaderProgram, gl);
     // glObject3.setVertexArray(testData1);
@@ -123,14 +119,12 @@ const test1 = () => {
 
     // glObject3.addChild(glObject4);
     // glObject2.addChild(glObject3);
-    glObject.addChild(glObject2);
+    // glObject.addChild(glObject2);
 
     objectList.push(glObject);
-    objectList.push(glObject2);
+    // objectList.push(glObject2);
     // objectList.push(glObject3);
     // objectList.push(glObject4);
 
-    for (const obj of objectList) {
-        obj.draw();
-    }
+    render();
 }
