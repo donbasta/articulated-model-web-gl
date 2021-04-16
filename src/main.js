@@ -77,27 +77,60 @@ const render = () => {
     gl.useProgram(program);
     gl.uniformMatrix4fv(mat, false, identityMat);
 
-    let articulatedModel = Model();
-
-    articulatedModel.draw();
+    test();
 }
 
-// save all shapes into .csv external files
-const saveShapes = () => {
-
+const test2 = () => {
+    console.log("TBD");
 }
 
-// load shape
-const loadShapes = (text) => {
+const test1 = () => {
+    objectList = [];
 
-}
+    console.log("tesuto");
 
-// Load external file into canvas
-const load = () => {
+    const glObject = new GLObject("kubus 1", program, gl);
+    glObject.setVertexArray(testData1)
+    glObject.setAnchorPoint([0, 0, 0], 3);
+    glObject.setPosition(200, 200, 0);
+    glObject.setRotation(0, 45, 0);
+    glObject.setScale(1, 1, 1);
+    glObject.bind();
 
-}
+    const glObject2 = new GLObject("kubus 2", shaderProgram, gl);
+    glObject2.setVertexArray(testData1);
+    glObject2.setAnchorPoint([100,100,100], 3);
+    glObject2.setPosition(0,0,0);
+    glObject2.setRotation(0,0,0);
+    glObject2.setScale(1,1,1);
+    glObject2.bind();
 
-// load button enabler disabler
-const checkLoad = () => {
+    // const glObject3 = new GLObject(2, shaderProgram, gl);
+    // glObject3.setVertexArray(testData1);
+    // glObject3.setAnchorPoint([100,100,100], 3);
+    // glObject3.setPosition(0,0,0);
+    // glObject3.setRotation(0,0,0);
+    // glObject3.setScale(1,1,1);
+    // glObject3.bind();
 
+    // const glObject4 = new GLObject(3, shaderProgram, gl);
+    // glObject4.setVertexArray(testData1);
+    // glObject4.setAnchorPoint([100,100,100], 3);
+    // glObject4.setPosition(0,0,0);
+    // glObject4.setRotation(0,0,0);
+    // glObject4.setScale(1,1,1);
+    // glObject4.bind();
+
+    // glObject3.addChild(glObject4);
+    // glObject2.addChild(glObject3);
+    glObject.addChild(glObject2);
+
+    objectList.push(glObject);
+    objectList.push(glObject2);
+    // objectList.push(glObject3);
+    // objectList.push(glObject4);
+
+    for (const obj of objectList) {
+        obj.draw();
+    }
 }

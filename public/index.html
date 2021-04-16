@@ -2,11 +2,16 @@
     <head>
         <link rel="stylesheet" href="../src/styles.css"/>
         <script id = "vertex" type = "x-shader/x-vertex">
-            attribute vec2 aVertexPosition;
-            uniform mat4 formMatrix;
+            attribute vec4 a_pos;
+            uniform mat4 u_proj_mat;
+            uniform vec3 u_resolution;
             
             void main() {
-                gl_Position = formMatrix * vec4(aVertexPosition, 0.0, 1.0);
+                vec3 pos = (u_proj_mat * a_pos).xyz;
+                vec3 a = pos / u_resolution;
+                vec3 b = a * 2.0;
+                vec3 c = b - 1.0;
+                gl_Position = vec4(c, 1);
             }
         </script>
 
@@ -15,10 +20,10 @@
             precision highp float;
             #endif
 
-            uniform vec4 uColor;
+            uniform vec4 u_fragColor;
 
             void main() {
-                gl_FragColor = uColor;
+                gl_FragColor = u_fragColor;
             }
         </script>
     </head>
@@ -37,7 +42,18 @@
                 <canvas id = "draw-shape" width = "500" height = "500"></canvas>
             </div>
         </div>
+
+        <button class="btn" onclick="test1()">
+            Add sample articulated model 1
+        </button>
+
+        <button class="btn" onclick="test2()">
+            Add sample articulated model 2
+        </button>
+
+
     </body>
     <script type = "text/javascript" src= "../src/main.js"></script>
-    <script type = "text/javascript" src= "../src/Model.js"></script>
+    <script type = "text/javascript" src= "../src/GLObject.js"></script>
+    <script type = "text/javascript" src= "../src/matrix.js"></script>
 </html>
