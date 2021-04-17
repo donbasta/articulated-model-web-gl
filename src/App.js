@@ -13,10 +13,11 @@ const App = () => {
 
     const [saveUrl, setSaveUrl] = useState(null);
 
-    const [objList, addObjList] = useState([
-        new GLObject(kubus, "kubus 1"), 
-        new GLObject(kubus2, "kubus 2")
-    ]);
+    const [objList, setObjList] = useState([]);
+
+    // objList[0].addChild(objList[1]);
+    
+    const [selectedObjectId, setSelectedObjectId] = useState(0);
 
     //status rotasi, dilatasi dan translasi
     const [rotationAngle, setRotationAngle] = useState({
@@ -30,7 +31,23 @@ const App = () => {
     //gl attribute
     const [glAttr, setGlAttr] = useState(null);
 
+    const createNewObject = (model, name) => {
+        const obj = new GLObject(model, name);
+        console.log("done create with id : ", obj.id);
+        objList.push(obj);
+        setObjList(objList);
+        // setObjList([...objList, obj]);
+    }
+
     useEffect(() => {
+        // console.log("create 1");
+        createNewObject(kubus, "kubus 1");
+        // console.log("create 2");
+        createNewObject(kubus2, "kubus 2");
+        // console.log("done 2");
+        objList[0].addChild(objList[1]);
+        
+
         const canvas = canvasRef.current;
         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
@@ -53,8 +70,7 @@ const App = () => {
         });
 
         renderScene(gl, programInfo, objList, rotationAngle, zoom, translate);
-
-    }, [objList]);
+    }, []);
 
     // useEffect(() => {
     //     const dataToSave = {
@@ -148,16 +164,24 @@ const App = () => {
     //     reader.readAsText(files)
     // }   
 
+    const changeSelectedObjectId = (e) => {
+        console.log(e.target);
+        console.log("id yang terpilih saat ini adalah: ", e.target.value);
+        setSelectedObjectId(e.target.value);
+
+        console.log("objList: \n", objList);
+    }
+
     return (
         <div>
             <div className="canvas-container">
             <canvas ref={canvasRef} width="640" height="480"></canvas>
             </div>
             <p> SELECT Object</p>
-            <select name="objects" id="objects">
+            <select name="objects" id="objects" onChange={changeSelectedObjectId}>
                 {objList.map(obj => {
                     return (
-                        <option value={obj.id}>{obj.name}</option>
+                        <option key={obj.id} value={obj.id}>{obj.name}</option>
                     )
                 })} 
             </select>

@@ -10,7 +10,6 @@ const Slider = (props) => {
         setSlider({
             value: props.value
         });
-        console.log(slider)
     }, [props.value]);
 
 

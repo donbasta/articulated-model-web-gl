@@ -3,15 +3,17 @@ import * as mat4 from './matrix.js';
 export default class GLObject {
     static idStatic = 0;
 
-    static addIdStatic() { this.constructor.idStatic++; }
+    static addIdStatic() { this.idStatic = this.idStatic + 1; }
 
     constructor(model, name) {
         const {positions, colors} = model;
         this.vertexArray = positions;
         this.colorArray = colors;
-
+        console.log("INI di dlm class : ", this.constructor.idStatic);
         this.id = this.constructor.idStatic;
+        console.log("Sebelum di add : ", this.constructor.idStatic);
         this.constructor.addIdStatic();
+        console.log("setelah di add : ", this.constructor.idStatic);
         this.name = name;
         this.childs = [];
         // this.vertexArray = [];
