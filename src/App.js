@@ -36,10 +36,8 @@ const App = () => {
         obj.setPosition(anchorPoint[0], anchorPoint[1], anchorPoint[2]);
         obj.setRotation(0, 0, 0);
         obj.setScale(1.0, 1.0, 1.0);
-        
         objList.push(obj);
         setObjList(objList);
-        // setObjList([...objList, obj]);
     }
 
     useEffect(() => {
@@ -90,12 +88,14 @@ const App = () => {
     // }, [currentModel, rotationAngle, zoom, translate])
 
     const handleX = (angle) => {
-        setRotationAngle({
-            x: angle,
-            y: rotationAngle.y,
-            z: rotationAngle.z
-        });
-        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+        // setRotationAngle({
+        //     x: angle,
+        //     y: rotationAngle.y,
+        //     z: rotationAngle.z
+        // });
+        const current = objList[selectedObjectId].rotation;
+        objList[selectedObjectId].rotateObj(angle, current[1], current[2]);
+        renderScene(glAttr.gl, glAttr.programInfo, objList);
     };
 
     const handleY = (angle) => {

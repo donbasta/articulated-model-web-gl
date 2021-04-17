@@ -109,7 +109,7 @@ const initBuffers = (gl, model) => {
   };
 }
 
-const renderScene = (gl, programInfo, objList, angle, zoom, translate) => {
+const renderScene = (gl, programInfo, objList) => {
   gl.clearColor(0.5, 0.5, 0.2, 0.8);  // Clear to black, fully opaque
   gl.clearDepth(1.0);                 // Clear everything
   gl.enable(gl.DEPTH_TEST);           // Enable depth testing
@@ -125,20 +125,20 @@ const renderScene = (gl, programInfo, objList, angle, zoom, translate) => {
 
   for (const obj of objList) {
     const objectBuffers = initBuffersFromObject(gl, obj);
-    drawObject(gl, obj, cameraMatrix, obj.vertexArray.length / 3, angle, zoom, translate, objectBuffers, programInfo);
+    drawObject(gl, obj, cameraMatrix, obj.vertexArray.length / 3, objectBuffers, programInfo);
   }
 }
 
-const drawObject = (gl, obj, cameraMatrix, count, angle, zoom, translate, buffers, programInfo) => {
+const drawObject = (gl, obj, cameraMatrix, count, buffers, programInfo) => {
 
-  // const projectionMatrix = obj.projectionMatrix;
+  const projectionMatrix = obj.calcProjectionMatrix();
   
-  let projectionMatrix = mat4.create();
-  projectionMatrix = mat4.translate(projectionMatrix, [translate, 0.0, 0.0]);
-  projectionMatrix = mat4.translate(projectionMatrix, [-0.0, 0.0, zoom]);
-  projectionMatrix = mat4.rotate(projectionMatrix, angle.x * Math.PI / 180, 'x');
-  projectionMatrix = mat4.rotate(projectionMatrix, angle.y * Math.PI / 180, 'y');
-  projectionMatrix = mat4.rotate(projectionMatrix, angle.z * Math.PI / 180, 'z');
+  // let projectionMatrix = mat4.create();
+  // projectionMatrix = mat4.translate(projectionMatrix, [translate, 0.0, 0.0]);
+  // projectionMatrix = mat4.translate(projectionMatrix, [-0.0, 0.0, zoom]);
+  // projectionMatrix = mat4.rotate(projectionMatrix, angle.x * Math.PI / 180, 'x');
+  // projectionMatrix = mat4.rotate(projectionMatrix, angle.y * Math.PI / 180, 'y');
+  // projectionMatrix = mat4.rotate(projectionMatrix, angle.z * Math.PI / 180, 'z');
 
   {
     const numComponents = 3;

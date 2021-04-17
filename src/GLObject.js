@@ -48,11 +48,13 @@ export default class GLObject {
     // set Rotation
     setRotation(x, y, z) {
         this.rotation = [x, y, z];
+        this.rotateMat3 = mat4.rotateMatrix(x, y, z);
     }
 
     // Set SCale
     setScale(x, y, z) {
         this.scale = [x, y, z];
+        this.scaleMat3 = mat4.scaleMatrix(x, y, z);
     }
 
     // Add child to tree
@@ -75,23 +77,23 @@ export default class GLObject {
     }
 
     setProjectionMatrix() {
-        let translateMat3, rotateMat3, scaleMat3;
-        {
-            const [u, v, w] = this.position;
-            const [a, b, c] = this.parentAnchorPoint;
-            translateMat3 = mat4.translationMatrix(u + a, v + b, w + c);
-        }
-        {
-            const [u, v, w] = this.rotation;
-            rotateMat3 = mat4.rotateMatrix(u, v, w);
-        }
-        {
-            const [u, v, w] = this.scale;
-            scaleMat3 = mat4.scaleMatrix(u, v, w);
-        }
+        // let translateMat3, rotateMat3, scaleMat3;
+        // {
+        //     const [u, v, w] = this.position;
+        //     const [a, b, c] = this.parentAnchorPoint;
+        //     this.translateMat3 = mat4.translationMatrix(u + a, v + b, w + c);
+        // }
+        // {
+        //     const [u, v, w] = this.rotation;
+        //     this.rotateMat3 = mat4.rotateMatrix(u, v, w);
+        // }
+        // {
+        //     const [u, v, w] = this.scale;
+        //     this.scaleMat3 = mat4.scaleMatrix(u, v, w);
+        // }
         const localProjectionMat = mat4.multiplyMatrices(
-            translateMat3,
-            mat4.multiplyMatrices(rotateMat3, scaleMat3)
+            this.translateMat3,
+            mat4.multiplyMatrices(this.rotateMat3, this.scaleMat3)
         )
         const projectionMat = mat4.multiplyMatrices(
             this.parentTransfomationMatrix,
@@ -109,13 +111,15 @@ export default class GLObject {
     
     // Rotate the object
     rotateObj(sudutX, sudutY, sudutZ) {
-        this.rotation = mat4.rotate(this.rotation, [sudutX, sudutY, sudutZ]);
+        this.rotation = [sudutX, sudutY, sudutZ];
+        this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
         this.transformChild();
     }
     
     // scale the object
     scaleObj(scaleX, scaleY, scaleZ) {
-        this.scale = mat4.scale(this.scale, [scaleX, scaleY, scaleZ]);
+        this.scale = [scaleX, scaleY, scaleZ];
+        this.scaleMatrix = mat4.scaleMatrix(scaleX, scaleY, scaleZ);
     }
 
     calcProjectionMatrix() {
