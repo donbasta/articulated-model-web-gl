@@ -6,6 +6,7 @@ import Slider from './Slider'
 import {kubus} from './kubus';
 import {kubus2} from './kubus2';
 import GLObject from './GLObject';
+import { objectTypeInternalSlot } from '@babel/types';
 
 const App = () => {
     const canvasRef = useRef(null);
@@ -16,8 +17,6 @@ const App = () => {
         new GLObject(kubus, "kubus 1"), 
         new GLObject(kubus2, "kubus 2")
     ]);
-
-    // const [currentModel, changeModel] = useState(kubus);
 
     //status rotasi, dilatasi dan translasi
     const [rotationAngle, setRotationAngle] = useState({
@@ -48,7 +47,6 @@ const App = () => {
                 cameraMatrix: gl.getUniformLocation(shaderProgram, 'uCameraMatrix'),
             }
         };
-
         setGlAttr({
             gl: gl,
             programInfo: programInfo,
@@ -66,16 +64,10 @@ const App = () => {
     //         zoom: zoom,
     //         translate: translate,
     //     }
-
     //     const textSave = JSON.stringify(dataToSave) 
-
     //     const data = new Blob([textSave], {type: 'text/json'})
-
     //     const url = window.URL.createObjectURL(data)
-
     //     setSaveUrl(url)
-
-        
     // }, [currentModel, rotationAngle, zoom, translate])
 
     const handleX = (angle) => {
@@ -86,8 +78,6 @@ const App = () => {
         });
 
         renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
-
-        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
     const handleY = (angle) => {
@@ -98,8 +88,6 @@ const App = () => {
         });
 
         renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
-
-        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
     const handleZ = (angle) => {
@@ -110,24 +98,18 @@ const App = () => {
         });
 
         renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
-
-        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
     const handleZoom = (coef) => {
         setZoom(-coef/10.0);
 
         renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
-
-        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     }
 
     const handleTranslate = (coef) => {
         setTranslate(coef/10);
 
         renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
-
-        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     }
 
     const handleReset = () => {
@@ -140,8 +122,6 @@ const App = () => {
         setTranslate(0.0)
 
         renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
-
-        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
     // const handleFileChange = (e) => {
@@ -173,6 +153,14 @@ const App = () => {
             <div className="canvas-container">
             <canvas ref={canvasRef} width="640" height="480"></canvas>
             </div>
+            <p> SELECT Object</p>
+            <select name="objects" id="objects">
+                {objList.map(obj => {
+                    return (
+                        <option value={obj.id}>{obj.name}</option>
+                    )
+                })} 
+            </select>
             <p> Rotate x-axis </p>
             <Slider min={0} max={360} value={rotationAngle.x} onChange={handleX}/>
             <p> Rotate y-axis </p>
