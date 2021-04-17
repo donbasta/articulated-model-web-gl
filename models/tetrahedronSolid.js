@@ -1,23 +1,41 @@
+const baseValue = 200;
 const tetrahedronSolid = {
     positions: [
-        -1, -1, -1,
-        1, -1, -1,
-        0, 0, 1,
-        1, -1, -1,
-        1, 1, -1,
-        0, 0, 1,
-        1, 1, -1,
-        -1, 1, -1,
-        0, 0, 1,
-        -1, 1, -1,
-        -1, -1, -1,
-        0, 0, 1,
-        1, -1, -1,
-        -1, -1, -1,
-        -1, 1, -1,
-        1, 1, -1
+        -baseValue, -baseValue, -baseValue,
+        baseValue, -baseValue, -baseValue,
+        0, 0, baseValue,
+        baseValue, -baseValue, -baseValue,
+        baseValue, baseValue, -baseValue,
+        0, 0, baseValue,
+        baseValue, baseValue, -baseValue,
+        -baseValue, baseValue, -baseValue,
+        0, 0, baseValue,
+        -baseValue, baseValue, -baseValue,
+        -baseValue, -baseValue, -baseValue,
+        0, 0, baseValue,
+        baseValue, -baseValue, -baseValue,
+        -baseValue, -baseValue, -baseValue,
+        -baseValue, baseValue, -baseValue,
+        baseValue, baseValue, -baseValue
     ],
-    colors: [1.0,  1.0,  1.0,  1.0,1.0,  1.0,  1.0,  1.0,1.0,  1.0,  1.0,  1.0,1.0,  0.0,  0.0,  1.0,1.0,  0.0,  0.0,  1.0,1.0,  0.0,  0.0,  1.0,0.0,  1.0,  0.0,  1.0,0.0,  1.0,  0.0,  1.0,0.0,  1.0,  0.0,  1.0,0.0,  0.0,  1.0,  1.0,0.0,  0.0,  1.0,  1.0,0.0,  0.0,  1.0,  1.0,1.0,  1.0,  0.0,  1.0,1.0,  1.0,  0.0,  1.0,1.0,  1.0,  0.0,  1.0,1.0,  1.0,  0.0,  1.0]
+    colors: [
+        1.0,  1.0,  1.0,  1.0,
+        1.0,  1.0,  1.0,  1.0,
+        1.0,  1.0,  1.0,  1.0,
+        1.0,  0.0,  0.0,  1.0,
+        1.0,  0.0,  0.0,  1.0,
+        1.0,  0.0,  0.0,  1.0,
+        0.0,  1.0,  0.0,  1.0,
+        0.0,  1.0,  0.0,  1.0,
+        0.0,  1.0,  0.0,  1.0,
+        0.0,  0.0,  1.0,  1.0,
+        0.0,  0.0,  1.0,  1.0,
+        0.0,  0.0,  1.0,  1.0,
+        1.0,  1.0,  0.0,  1.0,
+        1.0,  1.0,  0.0,  1.0,
+        1.0,  1.0,  0.0,  1.0,
+        1.0,  1.0,  0.0,  1.0
+    ]
 }
 
 export default tetrahedronSolid;

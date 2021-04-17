@@ -21,21 +21,20 @@ const App = () => {
         console.log("done create with id : ", obj.id);
         obj.setPosition(0, 0, 0);
         obj.setRotation(0, 0, 0);
-        obj.setScale(2, 2, 2);
+        obj.setScale(1, 1, 1);
         objList.push(obj);
         setObjList(objList);
     }
 
     useEffect(() => {
-
-        // createNewObject(kubus, "kubus 1", [0, 0, 0]);
-        // createNewObject(kubus2, "kubus 2", [1, 1, 1]);
-        // tetrahedronSolid.positions = mat4.multiplyMatrixAndScalar(tetrahedronSolid.positions, 100);
-        createNewObject(kubus2, "kubus 2", [1, 1, 1]);
+        createNewObject(kubus2, "kubus 2", [100, 100, 100]);
+        createNewObject(kubus, "kubus 1", [1, 1, 1]);
+        createNewObject(tetrahedronSolid, "tetrahedron", [1, 1, 1]);
 
         console.log(objList);
 
-        // objList[0].addChild(objList[1]);
+        objList[0].addChild(objList[1]);
+        objList[0].addChild(objList[2]);
 
         const canvas = canvasRef.current;
         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -50,7 +49,7 @@ const App = () => {
             },
             uniformLocations: {
                 projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-                // cameraMatrix: gl.getUniformLocation(shaderProgram, 'uCameraMatrix'),
+                cameraMatrix: gl.getUniformLocation(shaderProgram, 'uCameraMatrix'),
                 resolutionMatrix: gl.getUniformLocation(shaderProgram, 'uResolution'),
             }
         };
@@ -63,41 +62,31 @@ const App = () => {
     }, []);
 
     const handleX = (angle) => {
-        const current = objList[selectedObjectId].rotation;
-        objList[selectedObjectId].rotateObj(angle, 0, 0);
+        objList[selectedObjectId].rotateXObj(angle);
         renderScene(glAttr.gl, glAttr.programInfo, objList);
     };
 
     const handleY = (angle) => {
-        const current = objList[selectedObjectId].rotation;
-        objList[selectedObjectId].rotateObj(0, angle, 0);
+        objList[selectedObjectId].rotateYObj(angle);
         renderScene(glAttr.gl, glAttr.programInfo, objList);
     };
 
     const handleZ = (angle) => {
-        const current = objList[selectedObjectId].rotation;
-        objList[selectedObjectId].rotateObj(0, 0,angle);
+        objList[selectedObjectId].rotateZObj(angle);
         renderScene(glAttr.gl, glAttr.programInfo, objList);
     };
 
     const handleZoom = (coef) => {
-        // setZoom(-coef/10.0);
-
         renderScene(glAttr.gl, glAttr.programInfo, objList);
     }
 
     const handleTranslate = (coef) => {
-        // setTranslate(coef/10);
-        // objList[selectedObjectId].translateObj(coef, 0, 0);
         renderScene(glAttr.gl, glAttr.programInfo, objList);
     }
 
     const changeSelectedObjectId = (e) => {
         console.log(e.target);
-        console.log("id yang terpilih saat ini adalah: ", e.target.value);
         setSelectedObjectId(e.target.value);
-
-        console.log("objList: \n", objList);
     }
 
     return (

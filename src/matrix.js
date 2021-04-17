@@ -95,7 +95,7 @@ export const scaleMatrix = (w, h, d) => {
     ];
 }
 
-const rotateXMatrix = (a) => {
+export const rotateXMatrix = (a) => {
     return [
         1,  0,      0,          0,
         0,  cos(a), -sin(a),    0,
@@ -104,7 +104,7 @@ const rotateXMatrix = (a) => {
     ];
 }
 
-const rotateYMatrix = (a) => {
+export const rotateYMatrix = (a) => {
     return [
         cos(a),     0,  sin(a), 0,
         0,          1,  0,      0,
@@ -113,7 +113,7 @@ const rotateYMatrix = (a) => {
     ];
 }
 
-const rotateZMatrix = (a) => {
+export const rotateZMatrix = (a) => {
     return [
         cos(a), -sin(a),    0,  0,
         sin(a), cos(a),     0,  0,

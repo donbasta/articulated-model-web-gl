@@ -49,7 +49,9 @@ export default class GLObject {
     // set Rotation
     setRotation(x, y, z) {
         this.rotation = [x, y, z];
-        this.rotateMat3 = mat4.rotateMatrix(x, y, z);
+        this.rotateXMat3 = mat4.rotateXMatrix(x);
+        this.rotateYMat3 = mat4.rotateYMatrix(y);
+        this.rotateZMat3 = mat4.rotateZMatrix(z);
     }
 
     // Set SCale
@@ -95,7 +97,7 @@ export default class GLObject {
             mat4.multiplyMatrices(this.rotateMat3, this.scaleMat3)
         )
         const projectionMat = mat4.multiplyMatrices(
-            this.parentTransfomationMatrix,
+            this.parentTransformationMatrix,
             localProjectionMat
         )
         this.projectionMat = projectionMat;
@@ -120,6 +122,24 @@ export default class GLObject {
     // }
 
     // Rotate the object
+    rotateXObj(sudutX) {
+        this.rotation = [sudutX, this.rotation[1], this.rotation[2]];
+        this.rotateXMat3 = mat4.rotateXMatrix(sudutX);
+        this.transformChild();
+    }
+
+    rotateYObj(sudutY) {
+        this.rotation = [this.rotation[0], sudutY, this.rotation[2]];
+        this.rotateYMat3 = mat4.rotateYMatrix(sudutY);
+        this.transformChild();
+    }
+
+    rotateZObj(sudutZ) {
+        this.rotation = [this.rotation[0], this.rotation[1], sudutZ];
+        this.rotateZMat3 = mat4.rotateZMatrix(sudutZ);
+        this.transformChild();
+    }
+
     rotateObj(sudutX, sudutY, sudutZ) {
         this.rotation = [sudutX, sudutY, sudutZ];
         this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
@@ -136,12 +156,15 @@ export default class GLObject {
         const [sudutX, sudutY, sudutZ] = this.rotation;
         const [scaleX, scaleY, scaleZ] = this.scale;
         
-        // this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
+        this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
         this.translateMat3 = mat4.translate(this.translateMat3, position);
         this.scaleMat3 = mat4.scaleMatrix(scaleX, scaleY, scaleZ);
         // console.log(this.rotateMat3, this.translateMat3, this.scaleMatrix);
         return mat4.multiplyMatrices(
-            mat4.multiplyMatrices(this.translateMat3, this.rotateMat3), this.scaleMat3  
+            this.parentTransformationMatrix,
+            mat4.multiplyMatrices(
+                mat4.multiplyMatrices(this.translateMat3, this.rotateMat3), this.scaleMat3  
+            )
         );
     }
 
