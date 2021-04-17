@@ -9,17 +9,18 @@ export default class GLObject {
         const {positions, colors} = model;
         this.vertexArray = positions;
         this.colorArray = colors;
-        // console.log("INI di dlm class : ", this.constructor.idStatic);
+        
         this.id = this.constructor.idStatic;
-        // console.log("Sebelum di add : ", this.constructor.idStatic);
         this.constructor.addIdStatic();
-        // console.log("setelah di add : ", this.constructor.idStatic);
+        
         this.name = name;
         this.childs = [];
         // this.vertexArray = [];
         this.anchorPoint = anchorPoint;
         this.parentTransformationMatrix = mat4.create();
         this.transformMat = mat4.create();
+
+        this.translateMat3 = mat4.create();
 
         this.localProjectionMat = mat4.create();
         this.projectionMat = mat4.create();
@@ -48,13 +49,13 @@ export default class GLObject {
     // set Rotation
     setRotation(x, y, z) {
         this.rotation = [x, y, z];
-        this.rotateMat3 = mat4.rotateMatrix(x, y, z);
+        // this.rotateMat3 = mat4.rotateMatrix(x, y, z);
     }
 
     // Set SCale
     setScale(x, y, z) {
         this.scale = [x, y, z];
-        this.scaleMat3 = mat4.scaleMatrix(x, y, z);
+        // this.scaleMat3 = mat4.scaleMatrix(x, y, z);
     }
 
     // Add child to tree
@@ -104,27 +105,33 @@ export default class GLObject {
 
     // Translate the object
     translateObj(deltaX, deltaY, deltaZ) {
-        this.position = mat4.translate(this.position, [deltaX, deltaY, deltaZ]);
-        this.anchorPoint = mat4.translate(this.anchorPoint, [deltaX, deltaY, deltaZ]);
+        this.position = [deltaX, deltaY, deltaZ];
+        // this.anchorPoint = mat4.translate(this.anchorPoint, [deltaX, deltaY, deltaZ]);
         this.transformChild();
     }
     
     // Rotate the object
     rotateObj(sudutX, sudutY, sudutZ) {
         this.rotation = [sudutX, sudutY, sudutZ];
-        this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
         this.transformChild();
     }
     
     // scale the object
     scaleObj(scaleX, scaleY, scaleZ) {
         this.scale = [scaleX, scaleY, scaleZ];
-        this.scaleMatrix = mat4.scaleMatrix(scaleX, scaleY, scaleZ);
     }
 
     calcProjectionMatrix() {
+        const position = this.position;
+        const [sudutX, sudutY, sudutZ] = this.rotation;
+        const [scaleX, scaleY, scaleZ] = this.scale;
+        
+        this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
+        this.translateMat3 = mat4.translate(this.translateMat3, position);
+        this.scaleMat3 = mat4.scaleMatrix(scaleX, scaleY, scaleZ);
+        // console.log(this.rotateMat3, this.translateMat3, this.scaleMatrix);
         return mat4.multiplyMatrices(
-            mat4.multiplyMatrices(this.position, this.rotation), this.scale
+            mat4.multiplyMatrices(this.translateMat3, this.rotateMat3), this.scaleMat3  
         );
     }
     

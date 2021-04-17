@@ -132,7 +132,7 @@ const renderScene = (gl, programInfo, objList) => {
 const drawObject = (gl, obj, cameraMatrix, count, buffers, programInfo) => {
 
   const projectionMatrix = obj.calcProjectionMatrix();
-  
+  console.log("ini projection matrix", projectionMatrix);
   // let projectionMatrix = mat4.create();
   // projectionMatrix = mat4.translate(projectionMatrix, [translate, 0.0, 0.0]);
   // projectionMatrix = mat4.translate(projectionMatrix, [-0.0, 0.0, zoom]);

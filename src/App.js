@@ -33,9 +33,9 @@ const App = () => {
     const createNewObject = (model, name, anchorPoint) => {
         const obj = new GLObject(model, name, anchorPoint);
         console.log("done create with id : ", obj.id);
-        obj.setPosition(anchorPoint[0], anchorPoint[1], anchorPoint[2]);
+        obj.setPosition(0, 0, 0);
         obj.setRotation(0, 0, 0);
-        obj.setScale(1.0, 1.0, 1.0);
+        obj.setScale(0.5, 0.5, 0.5);
         objList.push(obj);
         setObjList(objList);
     }
@@ -104,7 +104,8 @@ const App = () => {
             y: angle,
             z: rotationAngle.z
         });
-
+        const current = objList[selectedObjectId].rotation;
+        objList[selectedObjectId].rotateObj(current[0], angle, current[2]);
         renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
     };
 
@@ -114,7 +115,8 @@ const App = () => {
             y: rotationAngle.y,
             z: angle
         });
-
+        const current = objList[selectedObjectId].rotation;
+        objList[selectedObjectId].rotateObj(current[0], current[1],angle);
         renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
     };
 
@@ -126,7 +128,7 @@ const App = () => {
 
     const handleTranslate = (coef) => {
         setTranslate(coef/10);
-
+        // objList[selectedObjectId].translateObj(coef, 0, 0);
         renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
     }
 
