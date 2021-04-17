@@ -15,12 +15,10 @@ export default class GLObject {
         
         this.name = name;
         this.childs = [];
-        // this.vertexArray = [];
+
         this.anchorPoint = anchorPoint;
         this.parentTransformationMatrix = mat4.create();
         this.transformMat = mat4.create();
-
-        this.translateMat3 = mat4.create();
 
         this.localProjectionMat = mat4.create();
         this.projectionMat = mat4.create();
@@ -44,18 +42,20 @@ export default class GLObject {
     // Set posisiton
     setPosition(x, y, z) {
         this.position = [x, y, z];
+        const [a, b, c] = this.anchorPoint;
+        this.translateMat3 = mat4.translationMatrix(x + a, y + b, z + c);
     }
 
     // set Rotation
     setRotation(x, y, z) {
         this.rotation = [x, y, z];
-        // this.rotateMat3 = mat4.rotateMatrix(x, y, z);
+        this.rotateMat3 = mat4.rotateMatrix(x, y, z);
     }
 
     // Set SCale
     setScale(x, y, z) {
         this.scale = [x, y, z];
-        // this.scaleMat3 = mat4.scaleMatrix(x, y, z);
+        this.scaleMat3 = mat4.scaleMatrix(x, y, z);
     }
 
     // Add child to tree
@@ -63,8 +63,6 @@ export default class GLObject {
         if (!this.childs.find(x => x.id === obj.id)) {
             this.childs.push(obj);
             obj.setParentAnchorPoint(this.anchorPoint);
-            // obj.setParentAnchorPoint(this.anchorPoint);
-            // obj.setParentTransformationMatrix(this.transformMat)
         }
     }
 
@@ -107,12 +105,24 @@ export default class GLObject {
     translateObj(deltaX, deltaY, deltaZ) {
         this.position = [deltaX, deltaY, deltaZ];
         // this.anchorPoint = mat4.translate(this.anchorPoint, [deltaX, deltaY, deltaZ]);
-        this.transformChild();
+        // this.transformChild();
     }
     
+    // // Rotate the object
+    // rotateObj(sudutX, sudutY, sudutZ) {
+    //     this.rotation = [sudutX, sudutY, sudutZ];
+    //     // this.transformChild();
+    // }
+    
+    // // scale the object
+    // scaleObj(scaleX, scaleY, scaleZ) {
+    //     this.scale = [scaleX, scaleY, scaleZ];
+    // }
+
     // Rotate the object
     rotateObj(sudutX, sudutY, sudutZ) {
         this.rotation = [sudutX, sudutY, sudutZ];
+        this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
         this.transformChild();
     }
     
@@ -126,7 +136,7 @@ export default class GLObject {
         const [sudutX, sudutY, sudutZ] = this.rotation;
         const [scaleX, scaleY, scaleZ] = this.scale;
         
-        this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
+        // this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
         this.translateMat3 = mat4.translate(this.translateMat3, position);
         this.scaleMat3 = mat4.scaleMatrix(scaleX, scaleY, scaleZ);
         // console.log(this.rotateMat3, this.translateMat3, this.scaleMatrix);
@@ -134,6 +144,25 @@ export default class GLObject {
             mat4.multiplyMatrices(this.translateMat3, this.rotateMat3), this.scaleMat3  
         );
     }
+
+    // calcProjectionMatrix() {
+    //     const position = this.position;
+    //     const [sudutX, sudutY, sudutZ] = this.rotation;
+    //     const [scaleX, scaleY, scaleZ] = this.scale;
+        
+    //     console.log("sebelum:");
+    //     console.log(this.rotateMat3, this.translateMat3, this.scaleMat3);
+
+    //     this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
+    //     this.translateMat3 = mat4.translate(this.translateMat3, position);
+    //     this.scaleMat3 = mat4.scaleMatrix(scaleX, scaleY, scaleZ);
+
+    //     console.log("sesudah:");
+    //     console.log(this.rotateMat3, this.translateMat3, this.scaleMat3);
+    //     return mat4.multiplyMatrices(
+    //         mat4.multiplyMatrices(this.translateMat3, this.rotateMat3), this.scaleMat3  
+    //     );
+    // }
     
     // Transfer childs
     transformChild() {

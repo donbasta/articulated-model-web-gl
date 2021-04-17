@@ -1,10 +1,12 @@
 import React, {useState, useRef, useEffect} from 'react'
 import './App.css'
-import {initShaderProgram, initBuffers, drawScene, renderScene} from './utils'
+import {initShaderProgram, renderScene} from './utils'
 import Slider from './Slider'
+import * as mat4 from './matrix.js';
 
 import {kubus} from './kubus';
 import {kubus2} from './kubus2';
+import tetrahedronSolid from './tetrahedronSolid';
 import GLObject from './GLObject';
 
 const App = () => {
@@ -19,19 +21,21 @@ const App = () => {
         console.log("done create with id : ", obj.id);
         obj.setPosition(0, 0, 0);
         obj.setRotation(0, 0, 0);
-        obj.setScale(1, 1, 1);
+        obj.setScale(2, 2, 2);
         objList.push(obj);
         setObjList(objList);
     }
 
     useEffect(() => {
-        // console.log("create 1");
-        createNewObject(kubus, "kubus 1", [0, 0, 0]);
-        // console.log("create 2");
+
+        // createNewObject(kubus, "kubus 1", [0, 0, 0]);
+        // createNewObject(kubus2, "kubus 2", [1, 1, 1]);
+        // tetrahedronSolid.positions = mat4.multiplyMatrixAndScalar(tetrahedronSolid.positions, 100);
         createNewObject(kubus2, "kubus 2", [1, 1, 1]);
-        // console.log("done 2");
-        objList[0].addChild(objList[1]);
-        
+
+        console.log(objList);
+
+        // objList[0].addChild(objList[1]);
 
         const canvas = canvasRef.current;
         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -46,7 +50,8 @@ const App = () => {
             },
             uniformLocations: {
                 projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-                cameraMatrix: gl.getUniformLocation(shaderProgram, 'uCameraMatrix'),
+                // cameraMatrix: gl.getUniformLocation(shaderProgram, 'uCameraMatrix'),
+                resolutionMatrix: gl.getUniformLocation(shaderProgram, 'uResolution'),
             }
         };
         setGlAttr({
@@ -57,35 +62,21 @@ const App = () => {
         renderScene(gl, programInfo, objList);
     }, []);
 
-    // useEffect(() => {
-    //     const dataToSave = {
-    //         positions: currentModel.positions,
-    //         colors: currentModel.colors,
-    //         rotangle: rotationAngle,
-    //         zoom: zoom,
-    //         translate: translate,
-    //     }
-    //     const textSave = JSON.stringify(dataToSave) 
-    //     const data = new Blob([textSave], {type: 'text/json'})
-    //     const url = window.URL.createObjectURL(data)
-    //     setSaveUrl(url)
-    // }, [currentModel, rotationAngle, zoom, translate])
-
     const handleX = (angle) => {
         const current = objList[selectedObjectId].rotation;
-        objList[selectedObjectId].rotateObj(angle, current[1], current[2]);
+        objList[selectedObjectId].rotateObj(angle, 0, 0);
         renderScene(glAttr.gl, glAttr.programInfo, objList);
     };
 
     const handleY = (angle) => {
         const current = objList[selectedObjectId].rotation;
-        objList[selectedObjectId].rotateObj(current[0], angle, current[2]);
+        objList[selectedObjectId].rotateObj(0, angle, 0);
         renderScene(glAttr.gl, glAttr.programInfo, objList);
     };
 
     const handleZ = (angle) => {
         const current = objList[selectedObjectId].rotation;
-        objList[selectedObjectId].rotateObj(current[0], current[1],angle);
+        objList[selectedObjectId].rotateObj(0, 0,angle);
         renderScene(glAttr.gl, glAttr.programInfo, objList);
     };
 
@@ -100,42 +91,6 @@ const App = () => {
         // objList[selectedObjectId].translateObj(coef, 0, 0);
         renderScene(glAttr.gl, glAttr.programInfo, objList);
     }
-
-    const handleReset = () => {
-        // setRotationAngle({
-        //     x: 0,
-        //     y: 0,
-        //     z: 0
-        // })
-        // setZoom(-6.0)
-        // setTranslate(0.0)
-
-        // renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
-    };
-
-    // const handleFileChange = (e) => {
-    //     let files = e.target.files[0]
-
-    //     console.log(files)
-
-
-    //     const reader = new FileReader();
-
-    //     reader.onload = () => {
-    //         try {
-    //             const data = JSON.parse(reader.result)
-
-    //             console.log(data)
-    //             setRotationAngle(data.rotangle)
-    //             setZoom(data.zoom)
-    //             setTranslate(data.translate)
-    //             changeModel({positions: data.positions, colors: data.colors})
-    //         } catch (ex) {
-    //             console.log(ex)
-    //         }
-    //     }
-    //     reader.readAsText(files)
-    // }   
 
     const changeSelectedObjectId = (e) => {
         console.log(e.target);
@@ -159,18 +114,15 @@ const App = () => {
                 })} 
             </select>
             <p> Rotate x-axis </p>
-            <Slider min={0} max={360} onChange={handleX}/>
+            <Slider min={0} max={360} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].rotation[0]} onChange={handleX}/>
             <p> Rotate y-axis </p>
-            <Slider min={0} max={360} onChange={handleY}/>
+            <Slider min={0} max={360} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].rotation[1]} onChange={handleY}/>
             <p> Rotate z-axis </p>
-            <Slider min={0} max={360} onChange={handleZ}/>
+            <Slider min={0} max={360} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].rotation[2]} onChange={handleZ}/>
             <p> Scale </p>
-            <Slider min={30} max={600} onChange={handleZoom}/>
+            <Slider min={30} max={600} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId]} onChange={handleZoom}/>
             <p> Translate x </p>
-            <Slider min={-50} max={50} value={0} onChange={handleTranslate}/>
-            <button onClick={handleReset} className="btn">Reset Default View</button>
-            {/* <input onChange={handleFileChange} type="file" id="files" name="files[]"/> */}
-            <a className="btn" download="myModel.json" href={saveUrl}>Download as JSON</a>
+            <Slider min={-50} max={50} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId]} onChange={handleTranslate}/>
         </div>
     )
 }

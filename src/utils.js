@@ -5,14 +5,17 @@ const initShaderProgram = (gl) => {
     attribute vec4 aVertexPosition;
     attribute vec4 aVertexColor;
 
-    uniform mat4 uCameraMatrix;
     uniform mat4 uProjectionMatrix;
+    uniform vec3 uResolution;
 
     varying lowp vec4 vColor;
 
     void main(void) {
-      gl_Position = uCameraMatrix * uProjectionMatrix * aVertexPosition;
       vColor = aVertexColor;
+
+      vec3 pos = (uProjectionMatrix * aVertexPosition).xyz;
+      vec3 a = pos / uResolution;
+      gl_Position = vec4(a, 1);
     }
     `
   const fsSource = `
@@ -82,33 +85,6 @@ const initBuffersFromObject = (gl, object) => {
   };
 }
 
-const initBuffers = (gl, model) => {
-  const {positions, colors} = model
-
-  const positionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-
-  const colorBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-
-  const indexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-  const indices = [];
-  for(let i = 0; i < positions.length; i++) {
-    indices.push(i)
-  }
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
-      new Uint16Array(indices), gl.STATIC_DRAW);
-
-  return {
-    position: positionBuffer,
-    color: colorBuffer,
-    indices: indexBuffer,
-  };
-}
-
 const renderScene = (gl, programInfo, objList) => {
   gl.clearColor(0.5, 0.5, 0.2, 0.8);  // Clear to black, fully opaque
   gl.clearDepth(1.0);                 // Clear everything
@@ -119,8 +95,8 @@ const renderScene = (gl, programInfo, objList) => {
 
   const fieldOfView = 45 * Math.PI / 180;   // in radians
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-  const zNear = 0.1;
-  const zFar = 100.0;
+  const zNear = 0;
+  const zFar = 200.0;
   const cameraMatrix = mat4.perspective(fieldOfView, aspect, zNear, zFar);
 
   for (const obj of objList) {
@@ -178,13 +154,21 @@ const drawObject = (gl, obj, cameraMatrix, count, buffers, programInfo) => {
 
   gl.useProgram(programInfo.program);
   gl.uniformMatrix4fv(
-      programInfo.uniformLocations.projectionMatrix,
-      false,
-      projectionMatrix);
-  gl.uniformMatrix4fv(
-      programInfo.uniformLocations.cameraMatrix,
-      false,
-      cameraMatrix);
+    programInfo.uniformLocations.projectionMatrix,
+    false,
+    projectionMatrix
+  );
+  // gl.uniformMatrix4fv(
+  //     programInfo.uniformLocations.cameraMatrix,
+  //     false,
+  //     cameraMatrix);
+
+    console.log("width height: ", gl.canvas.height, gl.canvas.width);
+
+  gl.uniform3fv(
+    programInfo.uniformLocations.resolutionMatrix,
+    [gl.canvas.width, gl.canvas.height, 1000],
+  );
 
   {
     const vertexCount = count
@@ -194,4 +178,4 @@ const drawObject = (gl, obj, cameraMatrix, count, buffers, programInfo) => {
   }
 }
 
-export {initShaderProgram, loadShader, initBuffers, renderScene}
+export {initShaderProgram, loadShader, renderScene}

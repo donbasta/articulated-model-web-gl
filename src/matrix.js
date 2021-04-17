@@ -1,8 +1,3 @@
-// reference:
-// https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web
-
-// point • matrix
-
 export const create = () => {
     return [
         1.0, 0.0, 0.0, 0.0,
@@ -11,6 +6,13 @@ export const create = () => {
         0.0, 0.0, 0.0, 1.0
     ];
 };
+
+export const multiplyMatrixAndScalar = (matrix, scalar) => {
+    for (let i = 0; i < matrix.length; i++) {
+        matrix[i] *= scalar;
+    }
+    return matrix;
+}
 
 export const transpose = (matrix) => {
     return [
