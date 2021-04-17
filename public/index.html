@@ -1,59 +1,48 @@
-<html>
-    <head>
-        <link rel="stylesheet" href="../src/styles.css"/>
-        <script id = "vertex" type = "x-shader/x-vertex">
-            attribute vec4 a_pos;
-            uniform mat4 u_proj_mat;
-            uniform vec3 u_resolution;
-            
-            void main() {
-                vec3 pos = (u_proj_mat * a_pos).xyz;
-                vec3 a = pos / u_resolution;
-                vec3 b = a * 2.0;
-                vec3 c = b - 1.0;
-                gl_Position = vec4(c, 1);
-            }
-        </script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
-        <script id = "fragment" type = "x-shader/x-fragment">
-            precision mediump float;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"
+      integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ=="
+      crossorigin="anonymous" defer>
+    </script>
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
 
-            uniform vec4 u_fragColor;
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
 
-            void main() {
-                gl_FragColor = u_fragColor;
-            }
-        </script>
-    </head>
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
 
-    <body onload="start()">
-        <div class = "navbar">
-            <div class="navbar-saveload">
-                <button class="btn" type = "button" id = "save-button" onclick="saveShapes()">Save</button>
-                <input type = "file" id = "load-filename" onchange="checkLoad()" multiple/>
-                <button class="btn" type = "button" id = "load-button" onclick="load()" disabled="true">Load</button>
-            </div>
-        </div>
-
-        <div class = "master-container">
-            <div class = "container center">
-                <canvas id = "draw-shape" width = "500" height = "500"></canvas>
-            </div>
-        </div>
-
-        <button class="btn" onclick="test1()">
-            Add sample articulated model 1
-        </button>
-
-        <button class="btn" onclick="test2()">
-            Add sample articulated model 2
-        </button>
-
-
-    </body>
-    <script type = "text/javascript" src= "../src/main.js"></script>
-    <script type = "text/javascript" src= "../src/GLObject.js"></script>
-    <script type = "text/javascript" src= "../src/matrix.js"></script>
-    <script type = "text/javascript" src= "../src/test1.js"></script>
-    <script type = "text/javascript" src= "../src/test2.js"></script>
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
 </html>
