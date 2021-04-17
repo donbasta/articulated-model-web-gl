@@ -4,13 +4,18 @@ import {initShaderProgram, initBuffers, drawScene, renderScene} from './utils'
 import Slider from './Slider'
 
 import {kubus} from './kubus';
+import {kubus2} from './kubus2';
+import GLObject from './GLObject';
 
 const App = () => {
     const canvasRef = useRef(null);
 
     const [saveUrl, setSaveUrl] = useState(null);
 
-    const [objList, addObjList] = useState([kubus, kubus]);
+    const [objList, addObjList] = useState([
+        new GLObject(kubus, "kubus 1"), 
+        new GLObject(kubus2, "kubus 2")
+    ]);
 
     // const [currentModel, changeModel] = useState(kubus);
 

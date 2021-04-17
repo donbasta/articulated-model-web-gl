@@ -50,7 +50,7 @@ const multiplyMatrixAndPoint = (matrix, point) => {
 }
 
 //matrixB • matrixA
-const multiplyMatrices = (matrixA, matrixB) => {
+export const multiplyMatrices = (matrixA, matrixB) => {
     // Slice the second matrix up into rows
     let row0 = [matrixB[ 0], matrixB[ 1], matrixB[ 2], matrixB[ 3]];
     let row1 = [matrixB[ 4], matrixB[ 5], matrixB[ 6], matrixB[ 7]];
@@ -75,7 +75,7 @@ const multiplyMatrices = (matrixA, matrixB) => {
 const sin = Math.sin;
 const cos = Math.cos;
 
-const translationMatrix = (x, y, z) => {
+export const translationMatrix = (x, y, z) => {
     return [
         1, 0, 0, 0,
         0, 1, 0, 0,
@@ -84,7 +84,7 @@ const translationMatrix = (x, y, z) => {
     ];
 }
 
-const scaleMatrix = (w, h, d) => {
+export const scaleMatrix = (w, h, d) => {
     return [
         w, 0, 0, 0,
         0, h, 0, 0,
@@ -120,6 +120,16 @@ const rotateZMatrix = (a) => {
     ];
 };
 
+export const rotateMatrix = (derajatX, derajatY, derajatZ) => {
+    const x = derajatX * Math.PI/180;
+    const y = derajatY * Math.PI/180;
+    const z = derajatZ * Math.PI/180;
+    return multiplyMatrices(
+        multiplyMatrices(rotateXMatrix(x), rotateYMatrix(y)),
+        rotateZMatrix(z)
+    )
+}
+
 export const rotate = (mat, angle, axis) => {
     if (axis === 'x') {
         return multiplyMatrices(mat, rotateXMatrix(angle));
@@ -132,6 +142,10 @@ export const rotate = (mat, angle, axis) => {
 
 export const translate = (mat, vec) => {
     return multiplyMatrices(mat, translationMatrix(vec[0], vec[1], vec[2]));
+}
+
+export const scale = (mat, vec) => {
+    return multiplyMatrices(mat, scaleMatrix(vec[0], vec[1], vec[2]));
 }
 
 const projector = {
