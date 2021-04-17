@@ -1,4 +1,4 @@
-const baseVal = -1;
+const baseVal = -0.5;
 const kubus2 = {
     positions: [
         0,0,0,

@@ -9,25 +9,9 @@ import GLObject from './GLObject';
 
 const App = () => {
     const canvasRef = useRef(null);
-
     const [saveUrl, setSaveUrl] = useState(null);
-
     const [objList, setObjList] = useState([]);
-
-    // objList[0].addChild(objList[1]);
-    
     const [selectedObjectId, setSelectedObjectId] = useState(0);
-
-    //status rotasi, dilatasi dan translasi
-    const [rotationAngle, setRotationAngle] = useState({
-        x: 0.0,
-        y: 0.0,
-        z: 0.0
-    });
-    const [zoom, setZoom] = useState(-6.0);
-    const [translate, setTranslate] = useState(0.0);
-
-    //gl attribute
     const [glAttr, setGlAttr] = useState(null);
 
     const createNewObject = (model, name, anchorPoint) => {
@@ -35,16 +19,16 @@ const App = () => {
         console.log("done create with id : ", obj.id);
         obj.setPosition(0, 0, 0);
         obj.setRotation(0, 0, 0);
-        obj.setScale(0.5, 0.5, 0.5);
+        obj.setScale(1, 1, 1);
         objList.push(obj);
         setObjList(objList);
     }
 
     useEffect(() => {
         // console.log("create 1");
-        createNewObject(kubus, "kubus 1", [0,0,0]);
+        createNewObject(kubus, "kubus 1", [0, 0, 0]);
         // console.log("create 2");
-        createNewObject(kubus2, "kubus 2", [1,1,1]);
+        createNewObject(kubus2, "kubus 2", [1, 1, 1]);
         // console.log("done 2");
         objList[0].addChild(objList[1]);
         
@@ -70,7 +54,7 @@ const App = () => {
             programInfo: programInfo,
         });
 
-        renderScene(gl, programInfo, objList, rotationAngle, zoom, translate);
+        renderScene(gl, programInfo, objList);
     }, []);
 
     // useEffect(() => {
@@ -88,60 +72,45 @@ const App = () => {
     // }, [currentModel, rotationAngle, zoom, translate])
 
     const handleX = (angle) => {
-        // setRotationAngle({
-        //     x: angle,
-        //     y: rotationAngle.y,
-        //     z: rotationAngle.z
-        // });
         const current = objList[selectedObjectId].rotation;
         objList[selectedObjectId].rotateObj(angle, current[1], current[2]);
         renderScene(glAttr.gl, glAttr.programInfo, objList);
     };
 
     const handleY = (angle) => {
-        setRotationAngle({
-            x: rotationAngle.x,
-            y: angle,
-            z: rotationAngle.z
-        });
         const current = objList[selectedObjectId].rotation;
         objList[selectedObjectId].rotateObj(current[0], angle, current[2]);
-        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+        renderScene(glAttr.gl, glAttr.programInfo, objList);
     };
 
     const handleZ = (angle) => {
-        setRotationAngle({
-            x: rotationAngle.x,
-            y: rotationAngle.y,
-            z: angle
-        });
         const current = objList[selectedObjectId].rotation;
         objList[selectedObjectId].rotateObj(current[0], current[1],angle);
-        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+        renderScene(glAttr.gl, glAttr.programInfo, objList);
     };
 
     const handleZoom = (coef) => {
-        setZoom(-coef/10.0);
+        // setZoom(-coef/10.0);
 
-        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+        renderScene(glAttr.gl, glAttr.programInfo, objList);
     }
 
     const handleTranslate = (coef) => {
-        setTranslate(coef/10);
+        // setTranslate(coef/10);
         // objList[selectedObjectId].translateObj(coef, 0, 0);
-        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+        renderScene(glAttr.gl, glAttr.programInfo, objList);
     }
 
     const handleReset = () => {
-        setRotationAngle({
-            x: 0,
-            y: 0,
-            z: 0
-        })
-        setZoom(-6.0)
-        setTranslate(0.0)
+        // setRotationAngle({
+        //     x: 0,
+        //     y: 0,
+        //     z: 0
+        // })
+        // setZoom(-6.0)
+        // setTranslate(0.0)
 
-        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+        // renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
     };
 
     // const handleFileChange = (e) => {
@@ -190,13 +159,13 @@ const App = () => {
                 })} 
             </select>
             <p> Rotate x-axis </p>
-            <Slider min={0} max={360} value={rotationAngle.x} onChange={handleX}/>
+            <Slider min={0} max={360} onChange={handleX}/>
             <p> Rotate y-axis </p>
-            <Slider min={0} max={360} value={rotationAngle.y} onChange={handleY}/>
+            <Slider min={0} max={360} onChange={handleY}/>
             <p> Rotate z-axis </p>
-            <Slider min={0} max={360} value={rotationAngle.z} onChange={handleZ}/>
+            <Slider min={0} max={360} onChange={handleZ}/>
             <p> Scale </p>
-            <Slider min={30} max={600} value={-10 * zoom} onChange={handleZoom}/>
+            <Slider min={30} max={600} onChange={handleZoom}/>
             <p> Translate x </p>
             <Slider min={-50} max={50} value={0} onChange={handleTranslate}/>
             <button onClick={handleReset} className="btn">Reset Default View</button>
