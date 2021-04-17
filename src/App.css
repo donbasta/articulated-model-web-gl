@@ -10,6 +10,12 @@ video {
 	display: none;
 }
 
+.canvas-container {
+	margin: 40px;
+	text-align: center;
+	padding: 20px;
+}
+
 .btn {
 	cursor: pointer;
 	text-decoration: none;

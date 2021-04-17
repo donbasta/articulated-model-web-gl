@@ -1,15 +1,16 @@
 import React, {useState, useRef, useEffect} from 'react'
 import './App.css'
-import {initShaderProgramLight, initShaderProgram, initBuffers, initBuffersLight, drawScene} from './utils'
+import {initShaderProgram, initBuffers, drawScene} from './utils'
 import Slider from './Slider'
 
+import kubus from './kubus.json';
+
 const App = () => {
-    const [programState, setProgramState] = useState(null)
-    const canvasRef = useRef(null)
+    const canvasRef = useRef(null);
 
-    const [saveUrl, setSaveUrl] = useState(null)
-    const [shading, setShading] = useState(false)
+    const [saveUrl, setSaveUrl] = useState(null);
 
+    const [objList, addObjList] = useState([]);
 
     //ganti model disini
     const [currentModel, changeModel] = useState({
@@ -26,9 +27,6 @@ const App = () => {
     const [zoom, setZoom] = useState(-6.0);
     const [translate, setTranslate] = useState(0.0);
 
-    //status projection type
-    const [proj, setProjectionType] = useState("perspective");
-
     //gl attribute
     const [glAttr, setGlAttr] = useState(null);
 
@@ -36,24 +34,9 @@ const App = () => {
         const canvas = canvasRef.current;
         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
-        const shaderProgram = shading ? initShaderProgramLight(gl) : initShaderProgram(gl);
+        const shaderProgram = initShaderProgram(gl);
         
-        const programInfo = shading ? {
-                withLight: true,
-                program: shaderProgram,
-                attribLocations: {
-                    vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-                    vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
-                    normalLocation: gl.getAttribLocation(shaderProgram, 'aNormalLocation')
-                },
-                uniformLocations: {
-                    worldInverseTransposeLocation: gl.getUniformLocation(shaderProgram, 'u_worldInverseTranspose'),
-                    worldLocation: gl.getUniformLocation(shaderProgram, 'u_world'),
-                    projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-                    modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
-                    lightWorldPositionLocation: gl.getUniformLocation(shaderProgram, 'u_lightWorldPosition')
-                }
-            } : {
+        const programInfo = {
             program: shaderProgram,
             attribLocations: {
                 vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
@@ -65,7 +48,7 @@ const App = () => {
             }
         };
     
-        const buffers = shading ? initBuffersLight(gl, currentModel) : initBuffers(gl, currentModel);
+        const buffers = initBuffers(gl, currentModel);
 
         setGlAttr({
             gl: gl,
@@ -73,9 +56,9 @@ const App = () => {
             buffers: buffers
         });
 
-        drawScene(gl, programInfo, buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate, proj);
+        drawScene(gl, programInfo, buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
 
-    }, [currentModel, shading]);
+    }, [currentModel]);
 
     useEffect(() => {
         const dataToSave = {
@@ -84,7 +67,6 @@ const App = () => {
             rotangle: rotationAngle,
             zoom: zoom,
             translate: translate,
-            proj: proj
         }
 
         const textSave = JSON.stringify(dataToSave) 
@@ -96,7 +78,7 @@ const App = () => {
         setSaveUrl(url)
 
         
-    }, [currentModel, rotationAngle, zoom, translate, proj])
+    }, [currentModel, rotationAngle, zoom, translate])
 
     const handleX = (angle) => {
         setRotationAngle({
@@ -105,7 +87,7 @@ const App = () => {
             z: rotationAngle.z
         });
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate, proj);
+        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
     const handleY = (angle) => {
@@ -115,7 +97,7 @@ const App = () => {
             z: rotationAngle.z
         });
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate, proj);
+        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
     const handleZ = (angle) => {
@@ -125,29 +107,19 @@ const App = () => {
             z: angle
         });
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate, proj);
+        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
     const handleZoom = (coef) => {
         setZoom(-coef/10.0);
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate, proj);
+        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     }
 
     const handleTranslate = (coef) => {
         setTranslate(coef/10);
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate, proj);
-    }
-
-    const onProjectionChange = (e) => {
-        console.log(e.target.value)
-        setProjectionType(e.target.value)
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate, proj);
-    }
-
-    const handleShading = () => {
-        setShading(!shading);
+        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     }
 
     const handleReset = () => {
@@ -156,11 +128,10 @@ const App = () => {
             y: 0,
             z: 0
         })
-        setProjectionType("perspective")
         setZoom(-6.0)
         setTranslate(0.0)
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate, proj);
+        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
     const handleFileChange = (e) => {
@@ -179,7 +150,6 @@ const App = () => {
                 setRotationAngle(data.rotangle)
                 setZoom(data.zoom)
                 setTranslate(data.translate)
-                setProjectionType(data.proj)
                 changeModel({positions: data.positions, colors: data.colors})
             } catch (ex) {
                 console.log(ex)
@@ -190,7 +160,9 @@ const App = () => {
 
     return (
         <div>
+            <div className="canvas-container">
             <canvas ref={canvasRef} width="640" height="480"></canvas>
+            </div>
             <p> Rotate x-axis </p>
             <Slider min={0} max={360} value={rotationAngle.x} onChange={handleX}/>
             <p> Rotate y-axis </p>
@@ -201,30 +173,9 @@ const App = () => {
             <Slider min={30} max={600} value={-10 * zoom} onChange={handleZoom}/>
             <p> Translate x </p>
             <Slider min={-50} max={50} value={0} onChange={handleTranslate}/>
-            <select className="selection" value={proj} onChange={onProjectionChange}>
-                <option value="perspective">Perspective</option>
-                <option value="oblique">Oblique</option>
-                <option value="orthographic">Orthographic</option>
-            </select>
             <button onClick={handleReset} className="btn">Reset Default View</button>
-            <button onClick={handleShading} className="btn">{
-                shading ? 'Turn Off Shading' : 'Turn On Shading'
-            }</button>
             <input onChange={handleFileChange} type="file" id="files" name="files[]"/>
             <a className="btn" download="myModel.json" href={saveUrl}>Download as JSON</a>
-            <div>
-                <h1>Help</h1>
-                <ul>
-                    <li>Use the slider above to rotate each axis</li>
-                    <li>To change the zooming, use the Scale slider above</li>
-                    <li>To translate along the x-axis, use the translate x slider</li>
-                    <li>To change the projection type, use the select box above</li>
-                    <li>To reset, click Reset Default View</li>
-                    <li>To turn on/off shading, click the turn on/off shading button</li>
-                    <li>To Save model and orientation, click Download as JSON</li>
-                    <li>To load model, click the choose file button and select your model</li>
-                </ul>
-            </div>
         </div>
     )
 }
