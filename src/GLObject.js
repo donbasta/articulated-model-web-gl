@@ -5,19 +5,19 @@ export default class GLObject {
 
     static addIdStatic() { this.idStatic = this.idStatic + 1; }
 
-    constructor(model, name) {
+    constructor(model, name, anchorPoint) {
         const {positions, colors} = model;
         this.vertexArray = positions;
         this.colorArray = colors;
-        console.log("INI di dlm class : ", this.constructor.idStatic);
+        // console.log("INI di dlm class : ", this.constructor.idStatic);
         this.id = this.constructor.idStatic;
-        console.log("Sebelum di add : ", this.constructor.idStatic);
+        // console.log("Sebelum di add : ", this.constructor.idStatic);
         this.constructor.addIdStatic();
-        console.log("setelah di add : ", this.constructor.idStatic);
+        // console.log("setelah di add : ", this.constructor.idStatic);
         this.name = name;
         this.childs = [];
         // this.vertexArray = [];
-    
+        this.anchorPoint = anchorPoint;
         this.parentTransformationMatrix = mat4.create();
         this.transformMat = mat4.create();
 
@@ -59,6 +59,7 @@ export default class GLObject {
     addChild(obj) {
         if (!this.childs.find(x => x.id === obj.id)) {
             this.childs.push(obj);
+            obj.setParentAnchorPoint(this.anchorPoint);
             // obj.setParentAnchorPoint(this.anchorPoint);
             // obj.setParentTransformationMatrix(this.transformMat)
         }
@@ -67,6 +68,10 @@ export default class GLObject {
     // Set Parent Tranfomation matrix
     setParentTransformationMatrix(transformMat) {
         this.parentTransformationMatrix = transformMat;
+    }
+
+    setParentAnchorPoint(anchorPoint) {
+        this.parentAnchorPoint = anchorPoint;
     }
 
     setProjectionMatrix() {
@@ -99,11 +104,13 @@ export default class GLObject {
     translateObj(deltaX, deltaY, deltaZ) {
         this.position = mat4.translate(this.position, [deltaX, deltaY, deltaZ]);
         this.anchorPoint = mat4.translate(this.anchorPoint, [deltaX, deltaY, deltaZ]);
+        this.transformChild();
     }
     
     // Rotate the object
     rotateObj(sudutX, sudutY, sudutZ) {
         this.rotation = mat4.rotate(this.rotation, [sudutX, sudutY, sudutZ]);
+        this.transformChild();
     }
     
     // scale the object
@@ -121,14 +128,14 @@ export default class GLObject {
     transformChild() {
         const proj = this.calcProjectionMatrix();
         for (const obj of this.childs) {
-            obj.parentTransformationMatrix = [...proj];
-            obj.parentAnchorPoint = [
-                obj.anchorPoint[0],
-                obj.anchorPoint[1],
-                obj.anchorPoint[2],
-            ]
+            obj.setParentTransformationMatrix(proj);
+            obj.setParentAnchorPoint(this.anchorPoint);
+            // obj.parentAnchorPoint = [
+            //     obj.anchorPoint[0],
+            //     obj.anchorPoint[1],
+            //     obj.anchorPoint[2],
+            // ]
             obj.projectionMat = obj.calcProjectionMatrix();
-            // obj.draw();
         }
     }
 }

@@ -6,7 +6,6 @@ import Slider from './Slider'
 import {kubus} from './kubus';
 import {kubus2} from './kubus2';
 import GLObject from './GLObject';
-import { objectTypeInternalSlot } from '@babel/types';
 
 const App = () => {
     const canvasRef = useRef(null);
@@ -31,9 +30,13 @@ const App = () => {
     //gl attribute
     const [glAttr, setGlAttr] = useState(null);
 
-    const createNewObject = (model, name) => {
-        const obj = new GLObject(model, name);
+    const createNewObject = (model, name, anchorPoint) => {
+        const obj = new GLObject(model, name, anchorPoint);
         console.log("done create with id : ", obj.id);
+        obj.setPosition(anchorPoint[0], anchorPoint[1], anchorPoint[2]);
+        obj.setRotation(0, 0, 0);
+        obj.setScale(1.0, 1.0, 1.0);
+        
         objList.push(obj);
         setObjList(objList);
         // setObjList([...objList, obj]);
@@ -41,9 +44,9 @@ const App = () => {
 
     useEffect(() => {
         // console.log("create 1");
-        createNewObject(kubus, "kubus 1");
+        createNewObject(kubus, "kubus 1", [0,0,0]);
         // console.log("create 2");
-        createNewObject(kubus2, "kubus 2");
+        createNewObject(kubus2, "kubus 2", [1,1,1]);
         // console.log("done 2");
         objList[0].addChild(objList[1]);
         
@@ -92,7 +95,6 @@ const App = () => {
             y: rotationAngle.y,
             z: rotationAngle.z
         });
-
         renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
     };
 
