@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react'
 import './App.css'
-import {initShaderProgram, initBuffers, drawScene} from './utils'
+import {initShaderProgram, initBuffers, drawScene, renderScene} from './utils'
 import Slider from './Slider'
 
 import {kubus} from './kubus';
@@ -10,9 +10,9 @@ const App = () => {
 
     const [saveUrl, setSaveUrl] = useState(null);
 
-    const [objList, addObjList] = useState([]);
+    const [objList, addObjList] = useState([kubus, kubus]);
 
-    const [currentModel, changeModel] = useState(kubus);
+    // const [currentModel, changeModel] = useState(kubus);
 
     //status rotasi, dilatasi dan translasi
     const [rotationAngle, setRotationAngle] = useState({
@@ -40,41 +40,38 @@ const App = () => {
             },
             uniformLocations: {
                 projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-                modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+                cameraMatrix: gl.getUniformLocation(shaderProgram, 'uCameraMatrix'),
             }
         };
-    
-        const buffers = initBuffers(gl, currentModel);
 
         setGlAttr({
             gl: gl,
             programInfo: programInfo,
-            buffers: buffers
         });
 
-        drawScene(gl, programInfo, buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
+        renderScene(gl, programInfo, objList, rotationAngle, zoom, translate);
 
-    }, [currentModel]);
+    }, [objList]);
 
-    useEffect(() => {
-        const dataToSave = {
-            positions: currentModel.positions,
-            colors: currentModel.colors,
-            rotangle: rotationAngle,
-            zoom: zoom,
-            translate: translate,
-        }
+    // useEffect(() => {
+    //     const dataToSave = {
+    //         positions: currentModel.positions,
+    //         colors: currentModel.colors,
+    //         rotangle: rotationAngle,
+    //         zoom: zoom,
+    //         translate: translate,
+    //     }
 
-        const textSave = JSON.stringify(dataToSave) 
+    //     const textSave = JSON.stringify(dataToSave) 
 
-        const data = new Blob([textSave], {type: 'text/json'})
+    //     const data = new Blob([textSave], {type: 'text/json'})
 
-        const url = window.URL.createObjectURL(data)
+    //     const url = window.URL.createObjectURL(data)
 
-        setSaveUrl(url)
+    //     setSaveUrl(url)
 
         
-    }, [currentModel, rotationAngle, zoom, translate])
+    // }, [currentModel, rotationAngle, zoom, translate])
 
     const handleX = (angle) => {
         setRotationAngle({
@@ -83,7 +80,9 @@ const App = () => {
             z: rotationAngle.z
         });
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+
+        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
     const handleY = (angle) => {
@@ -93,7 +92,9 @@ const App = () => {
             z: rotationAngle.z
         });
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+
+        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
     const handleZ = (angle) => {
@@ -103,19 +104,25 @@ const App = () => {
             z: angle
         });
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+
+        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
     const handleZoom = (coef) => {
         setZoom(-coef/10.0);
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+
+        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     }
 
     const handleTranslate = (coef) => {
         setTranslate(coef/10);
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+
+        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     }
 
     const handleReset = () => {
@@ -127,32 +134,34 @@ const App = () => {
         setZoom(-6.0)
         setTranslate(0.0)
 
-        drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, rotationAngle, zoom, translate);
+
+        // drawScene(glAttr.gl, glAttr.programInfo, glAttr.buffers, currentModel.positions.length / 3, rotationAngle, zoom, translate);
     };
 
-    const handleFileChange = (e) => {
-        let files = e.target.files[0]
+    // const handleFileChange = (e) => {
+    //     let files = e.target.files[0]
 
-        console.log(files)
+    //     console.log(files)
 
 
-        const reader = new FileReader();
+    //     const reader = new FileReader();
 
-        reader.onload = () => {
-            try {
-                const data = JSON.parse(reader.result)
+    //     reader.onload = () => {
+    //         try {
+    //             const data = JSON.parse(reader.result)
 
-                console.log(data)
-                setRotationAngle(data.rotangle)
-                setZoom(data.zoom)
-                setTranslate(data.translate)
-                changeModel({positions: data.positions, colors: data.colors})
-            } catch (ex) {
-                console.log(ex)
-            }
-        }
-        reader.readAsText(files)
-    }   
+    //             console.log(data)
+    //             setRotationAngle(data.rotangle)
+    //             setZoom(data.zoom)
+    //             setTranslate(data.translate)
+    //             changeModel({positions: data.positions, colors: data.colors})
+    //         } catch (ex) {
+    //             console.log(ex)
+    //         }
+    //     }
+    //     reader.readAsText(files)
+    // }   
 
     return (
         <div>
@@ -170,7 +179,7 @@ const App = () => {
             <p> Translate x </p>
             <Slider min={-50} max={50} value={0} onChange={handleTranslate}/>
             <button onClick={handleReset} className="btn">Reset Default View</button>
-            <input onChange={handleFileChange} type="file" id="files" name="files[]"/>
+            {/* <input onChange={handleFileChange} type="file" id="files" name="files[]"/> */}
             <a className="btn" download="myModel.json" href={saveUrl}>Download as JSON</a>
         </div>
     )
