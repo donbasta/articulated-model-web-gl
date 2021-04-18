@@ -1,15 +1,12 @@
 import React, {useState, useRef, useEffect} from 'react'
 import './App.css'
-import {initShaderProgram, renderScene} from './utils'
+import {initShaderProgram, initShaderProgramWithTexture, renderScene} from './utils'
 import Slider from './Slider'
-import * as mat4 from './matrix.js';
+import smiley from "./smiley.png";
 
-import hollowCube from './models/hollowCube';
 import balok from './models/balok';
-import {kubus} from './models/kubus';
-import {kubus2} from './models/kubus2';
-import tetrahedronSolid from './models/tetrahedronSolid';
 import GLObject from './GLObject';
+import { loadTexture } from './texture';
 
 const App = () => {
     const canvasRef = useRef(null);
@@ -17,6 +14,7 @@ const App = () => {
     const [objList, setObjList] = useState([]);
     const [selectedObjectId, setSelectedObjectId] = useState(0);
     const [glAttr, setGlAttr] = useState(null);
+    const [withImageTexture, setImageTexture] = useState(true);
 
     const createNewObject = (model, name, anchorPoint) => {
         const obj = new GLObject(model, name, anchorPoint);
@@ -26,27 +24,14 @@ const App = () => {
         obj.setScale(1, 1, 1);
         objList.push(obj);
         setObjList(objList);
-    }
+    };
 
-    useEffect(() => {
-        createNewObject(balok(0, 100, 0, 100, 0, 100), "badan", [0, 0, 0]);
-        createNewObject(balok(100, 300, 40, 60, 40, 60), "tangan kanan", [0, 0, 0]);
-        createNewObject(balok(-200, 0, 40, 60, 40, 60), "tangan kiri", [0, 0, 0]);
-        // createNewObject(kubus, "kubus 1", [1, 1, 1]);
-        // createNewObject(tetrahedronSolid, "tetrahedron", [1, 1, 1]);
-        // createNewObject(hollowCube, "kubus-bolong", [-50, -50, -50]);
-
-        console.log(objList);
-
-        objList[0].addChild(objList[1]);
-        objList[1].addChild(objList[2]);
-
-        const canvas = canvasRef.current;
-        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-
-        const shaderProgram = initShaderProgram(gl);
+    const loadProgram = (gl, texture) => {
+        const shaderProgram = !withImageTexture ? initShaderProgram(gl) : initShaderProgramWithTexture(gl);
         
-        const programInfo = {
+        const programInfo = 
+        !withImageTexture ? {
+            withTexture: false,
             program: shaderProgram,
             attribLocations: {
                 vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
@@ -54,14 +39,52 @@ const App = () => {
             },
             uniformLocations: {
                 projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-                cameraMatrix: gl.getUniformLocation(shaderProgram, 'uCameraMatrix'),
+                // cameraMatrix: gl.getUniformLocation(shaderProgram, 'uCameraMatrix'),
                 resolutionMatrix: gl.getUniformLocation(shaderProgram, 'uResolution'),
             }
+        } : {
+            imageTexture: texture,
+            withTexture: true,
+            program: shaderProgram,
+            attribLocations: {
+              vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+              textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
+            },
+            uniformLocations: {
+              projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+            //   modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+              resolutionMatrix: gl.getUniformLocation(shaderProgram, 'uResolution'),
+              uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
+            },
         };
+
         setGlAttr({
             gl: gl,
             programInfo: programInfo,
         });
+
+        return programInfo;
+    }
+
+    useEffect(() => {
+        createNewObject(balok(0, 100, 0, 100, 0, 100), "badan", [0, 0, 0]);
+        createNewObject(balok(100, 300, 40, 60, 40, 60), "tangan kanan", [0, 0, 0]);
+        createNewObject(balok(-200, 0, 40, 60, 40, 60), "tangan kiri", [0, 0, 0]);
+
+        console.log(objList);
+
+        objList[0].addChild(objList[1]);
+        objList[0].addChild(objList[2]);
+
+        const canvas = canvasRef.current;
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+        let texture;
+        if (withImageTexture) {
+            texture = loadTexture(gl, smiley);
+        }
+
+        const programInfo = loadProgram(gl, texture);
 
         renderScene(gl, programInfo, objList);
     }, []);
@@ -90,8 +113,21 @@ const App = () => {
     }
 
     const changeSelectedObjectId = (e) => {
-        console.log(e.target);
         setSelectedObjectId(e.target.value);
+    }
+
+    const applyImageTexture = () => {
+        console.log("hello");
+        setImageTexture(!withImageTexture);
+
+        let texture;
+        if (withImageTexture) {
+            texture = loadTexture(glAttr.gl, smiley);
+        }
+
+        const programInfo = loadProgram(glAttr.gl, texture);
+
+        renderScene(glAttr.gl, programInfo, objList);
     }
 
     return (
@@ -118,6 +154,8 @@ const App = () => {
                 <Slider min={30} max={600} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId]} onChange={handleZoom}/>
                 <p> Translate x </p>
                 <Slider min={-50} max={50} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId]} onChange={handleTranslate}/>
+                <button onClick={applyImageTexture}>Apply image texture</button>
+                {/* <img width={200} height={200} src={img} /> */}
             </div>
         </div>
     )
