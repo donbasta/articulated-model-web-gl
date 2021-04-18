@@ -80,6 +80,9 @@ export default class GLObject {
     // Translate the object
     translateObj(deltaX, deltaY, deltaZ) {
         this.position = [deltaX, deltaY, deltaZ];
+        // const [a, b, c] = this.anchorPoint;
+        // this.translateMat3 = mat4.translationMatrix(deltaX + a, deltaY + b, deltaZ + c);
+        this.transformChild();
         // this.anchorPoint = mat4.translate(this.anchorPoint, [deltaX, deltaY, deltaZ]);
         // this.transformChild();
     }
@@ -115,12 +118,13 @@ export default class GLObject {
     }
 
     calcProjectionMatrix() {
-        const position = this.position;
+        const [posX, posY, posZ] = this.position;
+        const [anchorPointX, anchorPointY, anchorPointZ] = this.anchorPoint
         const [sudutX, sudutY, sudutZ] = this.rotation;
         const [scaleX, scaleY, scaleZ] = this.scale;
         
         this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
-        this.translateMat3 = mat4.translate(this.translateMat3, position);
+        this.translateMat3 = mat4.translationMatrix(posX + anchorPointX, posY + anchorPointY, posZ + anchorPointZ);
         this.scaleMat3 = mat4.scaleMatrix(scaleX, scaleY, scaleZ);
 
         return mat4.multiplyMatrices(
