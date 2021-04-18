@@ -199,6 +199,7 @@ export default class GLObject {
             //     obj.anchorPoint[2],
             // ]
             obj.projectionMat = obj.calcProjectionMatrix();
+            obj.transformChild();
         }
     }
 }
