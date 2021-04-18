@@ -7,7 +7,6 @@ const initShaderProgram = (gl) => {
 
     uniform mat4 uProjectionMatrix;
     uniform vec3 uResolution;
-    //uniform mat4 uCameraMatrix;
 
     varying lowp vec4 vColor;
 
@@ -94,19 +93,13 @@ const renderScene = (gl, programInfo, objList) => {
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  const fieldOfView = 45 * Math.PI / 180;   // in radians
-  const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-  const zNear = 0;
-  const zFar = 200.0;
-  const cameraMatrix = mat4.perspective(fieldOfView, aspect, zNear, zFar);
-
   for (const obj of objList) {
     const objectBuffers = initBuffersFromObject(gl, obj);
-    drawObject(gl, obj, cameraMatrix, obj.vertexArray.length / 3, objectBuffers, programInfo);
+    drawObject(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo);
   }
 }
 
-const drawObject = (gl, obj, cameraMatrix, count, buffers, programInfo) => {
+const drawObject = (gl, obj, count, buffers, programInfo) => {
 
   const projectionMatrix = obj.calcProjectionMatrix();
 
@@ -152,10 +145,6 @@ const drawObject = (gl, obj, cameraMatrix, count, buffers, programInfo) => {
     false,
     projectionMatrix
   );
-  // gl.uniformMatrix4fv(
-  //     programInfo.uniformLocations.cameraMatrix,
-  //     false,
-  //     cameraMatrix);
 
   gl.uniform3fv(
     programInfo.uniformLocations.resolutionMatrix,

@@ -16,6 +16,10 @@ video {
 	padding: 20px;
 }
 
+.slider-container {
+	margin: 10px 20%;
+}
+
 .btn {
 	cursor: pointer;
 	text-decoration: none;
