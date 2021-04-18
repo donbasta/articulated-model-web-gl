@@ -65,6 +65,7 @@ export default class GLObject {
         if (!this.childs.find(x => x.id === obj.id)) {
             this.childs.push(obj);
             obj.setParentAnchorPoint(this.anchorPoint);
+            obj.setParentTransformationMatrix(this.calcProjectionMatrix());
         }
     }
 
@@ -77,6 +78,9 @@ export default class GLObject {
         this.parentAnchorPoint = anchorPoint;
     }
 
+    setTransformMat (matrix) {
+        this.transformMat = matrix;
+    }
     // Translate the object
     translateObj(deltaX, deltaY, deltaZ) {
         this.position = [deltaX, deltaY, deltaZ];
@@ -122,15 +126,18 @@ export default class GLObject {
         const [anchorPointX, anchorPointY, anchorPointZ] = this.anchorPoint
         const [sudutX, sudutY, sudutZ] = this.rotation;
         const [scaleX, scaleY, scaleZ] = this.scale;
-        
+
+        this.anchorPointmat = mat4.translationMatrix(-anchorPointX, -anchorPointY, -anchorPointZ);
+        // console.log("ini di calcProj", sudutX, sudutY, sudutZ)
         this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
-        this.translateMat3 = mat4.translationMatrix(posX + anchorPointX, posY + anchorPointY, posZ + anchorPointZ);
+        this.translateMat3 = mat4.translationMatrix(posX, posY, posZ);
         this.scaleMat3 = mat4.scaleMatrix(scaleX, scaleY, scaleZ);
 
+        // console.log("ini anchormat\n", this.parentTransformationMatrix)
         return mat4.multiplyMatrices(
             this.parentTransformationMatrix,
             mat4.multiplyMatrices(
-                mat4.multiplyMatrices(this.translateMat3, this.rotateMat3), this.scaleMat3  
+                mat4.multiplyMatrices(mat4.multiplyMatrices(this.translateMat3, this.rotateMat3), this.scaleMat3), this.anchorPointmat  
             )
         );
     }

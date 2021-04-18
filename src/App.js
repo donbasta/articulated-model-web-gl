@@ -18,31 +18,25 @@ const App = () => {
     const [selectedObjectId, setSelectedObjectId] = useState(0);
     const [glAttr, setGlAttr] = useState(null);
 
-    const createNewObject = (model, name, anchorPoint, position) => {
+    const createNewObject = (model, name, anchorPoint, position, rotation) => {
         const obj = new GLObject(model, name, anchorPoint);
         console.log("done create with id : ", obj.id);
         obj.setPosition(position[0], position[1], position[2]);
-        obj.setRotation(0, 0, 0);
+        obj.setRotation(rotation[0], rotation[1], rotation[2]);
         obj.setScale(1, 1, 1);
         objList.push(obj);
         setObjList(objList);
     }
 
     useEffect(() => {
-        createNewObject(balok(-50, 50, -50, 50, -50, 50), "badan", [0, 0, 0], [0, 0, 0]);
-        // createNewObject(balok(0, 100, 0, 30, 0, 30), "tangan kanan", [50, 0, 0]);
-        createNewObject(balok(0, 200, 0, 40, 0, 40), "tangan kanan", [0, 20, 20], [50, -40, -40]);
+        // createNewObject(balok(0, 200, 0, 200, 0, 200), "badan", [100, 100, 100], [0, 0, 0], [0,0,0]);
+        // createNewObject(balok(0, 200, 0, 40, 0, 40), "tangan kanan", [0, 20, 20], [200, 100, 100], [0, 360, 0]);
+        // createNewObject(balok(0, 200, 0, 40, 0, 40), "tangan kiri", [200, 20, 20], [0, 100, 100], [0, 0, 0]);
+        // createNewObject(balok(0, 200, 0, 40, 0, 40), "lengan kiri", [200, 20, 20], [0, 20, 20], [0, 0, 0]);
+        
+        // console.log(objList);
 
-        // createNewObject(balok(-50, 150, -10, 10, -50, 10), "tangan kanan", [50, 0, 0]);
-        // createNewObject(balok(-250, -50, -10, 10, -50, 10), "tangan kiri", [0, 0, 0]);
-        // createNewObject(balok(-250, -50, -10, 10, -50, 10), "lengan kiri", [0, 0, 0]);
-        // createNewObject(kubus, "kubus 1", [1, 1, 1]);
-        // createNewObject(tetrahedronSolid, "tetrahedron", [1, 1, 1]);
-        // createNewObject(hollowCube, "kubus-bolong", [-50, -50, -50]);
-
-        console.log(objList);
-
-        objList[0].addChild(objList[1]);
+        // objList[0].addChild(objList[1]);
         // objList[0].addChild(objList[2]);
         // objList[2].addChild(objList[3]);
 
@@ -88,6 +82,7 @@ const App = () => {
     };
 
     const handleZoom = (coef) => {
+        
         renderScene(glAttr.gl, glAttr.programInfo, objList);
     }
 
@@ -115,6 +110,96 @@ const App = () => {
     const changeSelectedObjectId = (e) => {
         console.log(e.target);
         setSelectedObjectId(e.target.value);
+    }
+
+    function download(content, fileName, contentType) {
+        var a = document.createElement("a");
+        var file = new Blob([content], {type: contentType});
+        a.href = URL.createObjectURL(file);
+        a.download = fileName;
+        a.click();
+    }
+    
+    const saveObject = () => {
+        let childs = [];
+        objList.forEach(obj => {
+            let arr =[];
+            obj.childs.forEach( e => {
+                arr.push(e.id)
+            })
+            childs.push(arr)
+        });
+        let data = {
+            objList : objList,
+            childs : childs
+        }
+        let jsonData = JSON.stringify(data);
+        download(jsonData, 'model.json', 'text/plain');
+    }
+
+    const loadObject = (file, callback) => {
+        if (file.type && file.type.indexOf('json') === -1) {
+            console.log('File is not an JSON.', file.type, file);
+            return;
+        }
+        const reader = new FileReader();
+        reader.addEventListener('load', (event) => {
+            let data = JSON.parse(atob(event.target.result.toString().match(/(?<=base64,).*/).toString()));
+            setObjList([])
+            data.objList.forEach(obj => {
+                const balok = {
+                    positions : obj.vertexArray,
+                    colors : obj.colorArray
+                }
+                const glObject = new GLObject(balok, obj.name, obj.anchorPoint);
+                const position = obj.position;
+                const rotation = obj.rotation;
+                const scale = obj.scale;
+
+                glObject.setParentTransformationMatrix(obj.parentTransformationMatrix);
+                // obj.setTransformMat(obj.transformMat);
+                // obj.localTransProjectionMat
+                // obj.projectionMat
+                glObject.setPosition(position[0], position[1], position[2]);
+                // obj.translateMat3
+                glObject.setRotation(rotation[0], rotation[1], rotation[2]);
+                // obj.rotationX
+                // obj.rotationY
+                // obj.rotationZ
+                glObject.setScale(scale[0], scale[1], scale[2]);
+                // obj.scaleMat3
+                // obj.anchorPointmat
+                // obj.rotateMat3
+
+                objList.push(glObject);
+                // setObjList(objList);
+            });
+            // console.log(list)
+            for (let i = 0; i < data.childs.length; i++) {
+                const childs = data.childs[i];
+                childs.forEach(element => { 
+                    console.log("INI ELEMENT" , element)
+                    objList[i].addChild(objList[element]);
+                });
+            }
+            callback(objList);
+        });
+        reader.readAsDataURL(file);
+    };
+
+    const handleLoad = (e) => {
+        console.log(e.target);
+        const callback = (list) => {
+            setObjList(list);
+            renderScene(glAttr.gl, glAttr.programInfo, objList);
+            
+            // objList = list;
+            console.log("INI LIST", list);
+            console.log("INI OBJ LIST\n", objList);
+
+        }
+        loadObject(e.target.files[0], callback);
+        // setSelectedObjectId(e.target.value);
     }
 
     return (
@@ -145,6 +230,9 @@ const App = () => {
                 <Slider min={-50} max={50} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].position[1]} onChange={handleTranslateY}/>
                 <p> Translate Z </p>
                 <Slider min={-50} max={50} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].position[2]} onChange={handleTranslateZ}/>
+                <button onClick={saveObject}>Save Object</button>
+                <input type="file" id="load" onChange={handleLoad}/>
+                {/* <button onClick={loadObject}>Load Object</button> */}
             </div>
         </div>
     )
