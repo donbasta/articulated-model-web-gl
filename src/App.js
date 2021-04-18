@@ -29,17 +29,34 @@ const App = () => {
     }
 
     useEffect(() => {
-        // createNewObject(balok(0, 200, 0, 200, 0, 200), "badan", [100, 100, 100], [0, 0, 0], [0,0,0]);
-        // createNewObject(balok(0, 200, 0, 40, 0, 40), "tangan kanan", [0, 20, 20], [200, 100, 100], [0, 360, 0]);
-        // createNewObject(balok(0, 200, 0, 40, 0, 40), "tangan kiri", [200, 20, 20], [0, 100, 100], [0, 0, 0]);
-        // createNewObject(balok(0, 200, 0, 40, 0, 40), "lengan kiri", [200, 20, 20], [0, 20, 20], [0, 0, 0]);
+
+        // ===================== UNCOMMENT UNTUK MEMULAI MODELING, SETELAH SELESAI SAVE UNTUK MENJADI JSON ===============
+        // ===================== COMMENT DAN LOAD FILE SAVE, UNTUK MELIHAT APAKAH SESIMPAN ===============================
+        // createNewObject(balok(0, 400, 0, 400, 0, 200), "badan", [200, 200, 100], [0, 0, 0], [0,0,0]);
+        // createNewObject(balok(0, 300, 0, 200, 0, 190), "kepala", [150, 100, 95], [200, 500, 100], [360, 180, 180]);
+        // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kiri", [100, 0, 5], [25, 50, 50], [0, 180, 180]);
+        // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kanan", [0, 0, 5], [275, 50, 50], [0, 180, 180]);
+        // createNewObject(balok(0, 200, 0, 100, 0, 50), "mulut", [100, 75, 25], [150, 125, 200], [0, 180, 180]);
+
         
-        // console.log(objList);
-
+        // createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kiri", [250, 50, 75], [50, 345, 100], [0, 270, 180]);
+        // createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kanan", [0, 50, 75], [350, 345, 100], [0, 90, 180]);
+        // createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kiri", [250, 50, 75], [50, 55, 100], [0, 270, 180]);
+        // createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kanan", [0, 50, 75], [350, 55, 100], [0, 90, 180]);
+        
+        // // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kanan", [50, 50, 5], [325, 0, 50], [180, 180, 180]);
+        // // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kiri", [50, 50, 5], [-25, 0, 50], [180, 180, 180]);
+        
+        
         // objList[0].addChild(objList[1]);
-        // objList[0].addChild(objList[2]);
-        // objList[2].addChild(objList[3]);
-
+        // objList[1].addChild(objList[2]);
+        // objList[1].addChild(objList[3]);
+        // objList[1].addChild(objList[4]);
+        // objList[0].addChild(objList[5]);
+        // objList[0].addChild(objList[6]);
+        // objList[0].addChild(objList[7]);
+        // objList[0].addChild(objList[8]);
+        // console.log(objList);
         const canvas = canvasRef.current;
         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
