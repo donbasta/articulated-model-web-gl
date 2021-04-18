@@ -1,0 +1,52 @@
+*, html {
+	margin: 0;
+	padding: 0;
+	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+canvas {
+	background-color: black;
+}
+video {
+	display: none;
+}
+
+.canvas-container {
+	margin: 40px;
+	text-align: center;
+	padding: 20px;
+}
+
+.slider-container {
+	margin: 10px 20%;
+}
+
+.btn {
+	cursor: pointer;
+	text-decoration: none;
+	padding: 20px 15px;
+	margin: 10px;
+	border: 0;
+	font-size: 14px;
+	background-color: #4CAF50;
+	color: #FFF;
+}
+
+.btn:hover {
+	background-color: #66d169;
+}
+
+.btn:focus {
+	background-color: #3d9b40;
+	outline: none;
+}
+
+.selection {
+	padding: 20px 15px;
+	margin: 10px;
+	border: 1px solid rgb(173, 173, 173);
+	font-size: 14px;
+}
+
+.selection:focus {
+	outline: none;
+}
