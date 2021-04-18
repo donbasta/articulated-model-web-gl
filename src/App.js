@@ -39,7 +39,7 @@ const App = () => {
         console.log(objList);
 
         objList[0].addChild(objList[1]);
-        objList[0].addChild(objList[2]);
+        objList[1].addChild(objList[2]);
 
         const canvas = canvasRef.current;
         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
