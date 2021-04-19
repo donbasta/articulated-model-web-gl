@@ -1,32 +1,11 @@
-import * as mat4 from './matrix.js';
-import { loadTexture } from './texture.js';
+import * as mat4 from './matrix';
+import { loadTexture } from './imageTextureUtils';
+import { COLOR_VERTEX_SHADER, COLOR_FRAGMENT_SHADER } from './shaders/colorTexture';
+import { IMAGE_VERTEX_SHADER, IMAGE_FRAGMENT_SHADER } from './shaders/imageTexture';
 
 const initShaderProgram = (gl) => {
-  const vsSource = `
-    attribute vec4 aVertexPosition;
-    attribute vec4 aVertexColor;
-
-    uniform mat4 uProjectionMatrix;
-    uniform vec3 uResolution;
-
-    varying lowp vec4 vColor;
-
-    void main(void) {
-      vColor = aVertexColor;
-
-      vec3 pos = (uProjectionMatrix * aVertexPosition).xyz;
-      vec3 a = pos / uResolution;
-      gl_Position = vec4(a, 1);
-  }
-  `;
-
-  const fsSource = `
-    varying lowp vec4 vColor;
-
-    void main(void) {
-      gl_FragColor = vColor;
-    }
-  `;
+  const vsSource = COLOR_VERTEX_SHADER;
+  const fsSource = COLOR_FRAGMENT_SHADER;
 
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource)
   const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource)
@@ -45,32 +24,8 @@ const initShaderProgram = (gl) => {
 }
 
 const initShaderProgramWithTexture = (gl) => {
-  const vsSource = `
-    attribute vec4 aVertexPosition;
-    attribute vec2 aTextureCoord;
-
-    uniform mat4 uProjectionMatrix;
-    uniform vec3 uResolution;
-
-    varying highp vec2 vTextureCoord;
-
-    void main(void) {
-      vTextureCoord = aTextureCoord;
-
-      vec3 pos = (uProjectionMatrix * aVertexPosition).xyz;
-      vec3 a = pos / uResolution;
-      gl_Position = vec4(a, 1);
-  }
-  `;
-
-  const fsSource = `
-    varying highp vec2 vTextureCoord;
-    uniform sampler2D uSampler;
-
-    void main(void) {
-      gl_FragColor = texture2D(uSampler, vTextureCoord);
-    }
-  `;
+  const vsSource = IMAGE_VERTEX_SHADER;
+  const fsSource = IMAGE_FRAGMENT_SHADER;
 
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource)
   const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource)
@@ -88,7 +43,6 @@ const initShaderProgramWithTexture = (gl) => {
   return shaderProgram
 }
 
-
 const loadShader = (gl, type, source) => {
     const shader = gl.createShader(type)
 
@@ -105,8 +59,9 @@ const loadShader = (gl, type, source) => {
 }
 
 const initBuffersFromObject = (gl, object) => {
-  const positions = object.vertexArray;
-  const colors = object.colorArray;
+  let positions = object.vertexArray;
+  let colors = object.colorArray;
+  let indices = object.indicesArray;
 
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -118,12 +73,14 @@ const initBuffersFromObject = (gl, object) => {
 
   const indexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-  const indices = [];
+  const temp = [];
   for(let i = 0; i < positions.length; i++) {
-    indices.push(i)
+    temp.push(i)
   }
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
-      new Uint16Array(indices), gl.STATIC_DRAW);
+  if (indices === undefined) {
+    indices = temp;
+  }
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 
   return {
     position: positionBuffer,
@@ -221,8 +178,6 @@ const drawObject = (gl, obj, count, buffers, programInfo) => {
 
   if (programInfo.withTexture)
   {
-    // const texture = loadTexture(gl, 'smiley.png');
-
     const numComponents = 2;
     const type = gl.FLOAT;
     const normalize = false;

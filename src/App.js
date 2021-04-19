@@ -4,9 +4,10 @@ import {initShaderProgram, initShaderProgramWithTexture, renderScene} from './ut
 import Slider from './Slider'
 import smiley from "./smiley.png";
 
+import { createSphere } from './geometry';
 import balok from './models/balok';
 import GLObject from './GLObject';
-import { loadTexture } from './texture';
+import { loadTexture } from './imageTextureUtils';
 
 const App = () => {
     const canvasRef = useRef(null);
@@ -71,10 +72,12 @@ const App = () => {
         createNewObject(balok(100, 300, 40, 60, 40, 60), "tangan kanan", [0, 0, 0]);
         createNewObject(balok(-200, 0, 40, 60, 40, 60), "tangan kiri", [0, 0, 0]);
 
-        console.log(objList);
+        // console.log(objList);
 
         objList[0].addChild(objList[1]);
         objList[0].addChild(objList[2]);
+
+        // const sphereMesh = createSphere()
 
         const canvas = canvasRef.current;
         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
