@@ -1,63 +1,3 @@
-import * as mat4 from './matrix';
-import { loadTexture } from './imageTextureUtils';
-import { COLOR_VERTEX_SHADER, COLOR_FRAGMENT_SHADER } from './shaders/colorTexture';
-import { IMAGE_VERTEX_SHADER, IMAGE_FRAGMENT_SHADER } from './shaders/imageTexture';
-
-const initShaderProgram = (gl) => {
-  const vsSource = COLOR_VERTEX_SHADER;
-  const fsSource = COLOR_FRAGMENT_SHADER;
-
-  const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource)
-  const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource)
-
-  const shaderProgram = gl.createProgram()
-  gl.attachShader(shaderProgram, vertexShader)
-  gl.attachShader(shaderProgram, fragmentShader)
-  gl.linkProgram(shaderProgram)
-
-  if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-    alert('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram))
-    return null
-  }
-
-  return shaderProgram
-}
-
-const initShaderProgramWithTexture = (gl) => {
-  const vsSource = IMAGE_VERTEX_SHADER;
-  const fsSource = IMAGE_FRAGMENT_SHADER;
-
-  const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource)
-  const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource)
-
-  const shaderProgram = gl.createProgram()
-  gl.attachShader(shaderProgram, vertexShader)
-  gl.attachShader(shaderProgram, fragmentShader)
-  gl.linkProgram(shaderProgram)
-
-  if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-    alert('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram))
-    return null
-  }
-
-  return shaderProgram
-}
-
-const loadShader = (gl, type, source) => {
-    const shader = gl.createShader(type)
-
-    gl.shaderSource(shader, source)
-    gl.compileShader(shader)
-  
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      alert('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
-      gl.deleteShader(shader)
-      return null
-    }
-  
-    return shader
-}
-
 const initBuffersFromObject = (gl, object) => {
   let positions = object.vertexArray;
   let colors = object.colorArray;
@@ -117,6 +57,10 @@ const initBuffersWithImageTexture = (gl, object) => {
   };
 }
 
+const initBuffersWithEnvironmentTexture = (gl, object) => {
+
+}
+
 const renderScene = (gl, programInfo, objList) => {
   gl.clearColor(0.5, 0.5, 0.2, 0.8);  // Clear to black, fully opaque
   gl.clearDepth(1.0);                 // Clear everything
@@ -126,8 +70,17 @@ const renderScene = (gl, programInfo, objList) => {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   for (const obj of objList) {
-    const objectBuffers = 
-      !programInfo.withTexture ? initBuffersFromObject(gl, obj) : initBuffersWithImageTexture(gl, obj);
+    let objectBuffers;
+    switch (programInfo.textureType) {
+      case "image":
+        objectBuffers = initBuffersWithImageTexture(gl, obj);
+        break;
+      case "environment":
+        console.log("TBD");
+        break;
+      default:
+        objectBuffers = initBuffersFromObject(gl, obj);
+    }
     drawObject(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo);
   }
 }
@@ -155,7 +108,7 @@ const drawObject = (gl, obj, count, buffers, programInfo) => {
         programInfo.attribLocations.vertexPosition);
   }
 
-  if (!programInfo.withTexture)
+  if (programInfo.textureType === "default")
   {
     const numComponents = 4;
     const type = gl.FLOAT;
@@ -176,7 +129,7 @@ const drawObject = (gl, obj, count, buffers, programInfo) => {
     );
   }
 
-  if (programInfo.withTexture)
+  if (programInfo.textureType === "image")
   {
     const numComponents = 2;
     const type = gl.FLOAT;
@@ -223,8 +176,5 @@ const drawObject = (gl, obj, count, buffers, programInfo) => {
 }
 
 export {
-  initShaderProgram, 
-  initShaderProgramWithTexture,
-  loadShader, 
   renderScene,
 } 

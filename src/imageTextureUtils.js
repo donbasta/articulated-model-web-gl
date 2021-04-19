@@ -1,6 +1,6 @@
 import img from "./smiley.png";
 
-const loadTexture = (gl, url) => {
+const loadImageTexture = (gl, url) => {
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
@@ -11,15 +11,14 @@ const loadTexture = (gl, url) => {
   const border = 0;
   const srcFormat = gl.RGBA;
   const srcType = gl.UNSIGNED_BYTE;
-  const pixel = new Uint8Array([0, 0, 255, 255]);  // opaque blue
+  const pixel = new Uint8Array([0, 0, 255, 255]); 
   gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
                   width, height, border, srcFormat, srcType,
                   pixel);
 
   const image = new Image();
-  image.src = img;
+  image.src = url;
   image.onload = () => {
-    console.log("awawawawa");
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
                 srcFormat, srcType, image);
@@ -31,9 +30,6 @@ const loadTexture = (gl, url) => {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     }
   }
-  console.log(url, "heeh");
-  
-
   return texture;
 }
 
@@ -42,5 +38,5 @@ const isPowerOf2 = (val) => {
 }
 
 export {
-  loadTexture
+  loadImageTexture,
 }

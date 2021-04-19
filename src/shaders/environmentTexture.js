@@ -1,50 +1,56 @@
-const SKYBOX_VERTEX_SHADER_SOURCE =`
+const ENVIRONMENT_VERTEX_SHADER = `
     #version 300 es
-    out vec3 v_dir;
-    uniform mat4 u_skyboxMatrix;
-    uniform vec2 u_targetScale;
-    const vec2[4] POSITIONS = vec2[](
-        vec2(-1.0, -1.0),
-        vec2(1.0, -1.0),
-        vec2(-1.0, 1.0),
-        vec2(1.0, 1.0)
-    );
-    const int[6] INDICES = int[](
-        0, 1, 2,
-        3, 2, 1
-    );
-    void main(void) {
-        vec2 position = POSITIONS[INDICES[gl_VertexID]];
-        vec3 dir = (u_skyboxMatrix * vec4(position * u_targetScale, -1.0, 0.0)).xyz;
-        v_dir = normalize(dir);
-        gl_Position = vec4(position, 0.0, 1.0);
+    
+    in vec4 a_position;
+    in vec3 a_normal;
+    
+    uniform mat4 u_projection;
+    uniform mat4 u_view;
+    uniform mat4 u_world;
+    
+    out vec3 v_worldPosition;
+    out vec3 v_worldNormal;
+    
+    void main() {
+    // Multiply the position by the matrix.
+    gl_Position = u_projection * u_view * u_world * a_position;
+    
+    // send the view position to the fragment shader
+    v_worldPosition = (u_world * a_position).xyz;
+    
+    // orient the normals and pass to the fragment shader
+    v_worldNormal = mat3(u_world) * a_normal;
     }
 `;
 
-const SKYBOX_FRAGMENT_SHADER_SOURCE =`
+const ENVIRONMENT_FRAGMENT_SHADER = `
     #version 300 es
+    
     precision highp float;
-    in vec3 v_dir;
-    out vec4 o_color;
-    uniform samplerCube u_skyboxTexture;
-    #define HALF_PI 1.57079632679
-    mat2 rotate(float r) {
-        float c = cos(r);
-        float s = sin(r);
-        return  mat2(c, s, -s, c);
-    }
-    vec4 sampleCubemap(samplerCube cubemap, vec3 v) {
-        v.xz *= rotate(HALF_PI);
-        v.x *= -1.0;
-        return texture(cubemap, v);
-    }
-    void main(void) {
-        vec3 skybox = sampleCubemap(u_skyboxTexture, v_dir).rgb;
-        o_color = vec4(skybox, 1.0);
+    
+    // Passed in from the vertex shader.
+    in vec3 v_worldPosition;
+    in vec3 v_worldNormal;
+    
+    // The texture.
+    uniform samplerCube u_texture;
+    
+    // The position of the camera
+    uniform vec3 u_worldCameraPosition;
+    
+    // we need to declare an output for the fragment shader
+    out vec4 outColor;
+    
+    void main() {
+    vec3 worldNormal = normalize(v_worldNormal);
+    vec3 eyeToSurfaceDir = normalize(v_worldPosition - u_worldCameraPosition);
+    vec3 direction = reflect(eyeToSurfaceDir,worldNormal);
+    
+    outColor = texture(u_texture, direction);
     }
 `;
 
 export {
-    SKYBOX_VERTEX_SHADER_SOURCE,
-    SKYBOX_FRAGMENT_SHADER_SOURCE
-}
+    ENVIRONMENT_FRAGMENT_SHADER,
+    ENVIRONMENT_VERTEX_SHADER,
+};
