@@ -126,24 +126,24 @@ const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo) => {
   gl.useProgram(programInfo.program);
 
   const fieldOfViewRadians = degToRad(60);
-  const modelXRotationRadians = degToRad(0 + obj.rotation[0]);
-  const modelYRotationRadians = degToRad(0 + obj.rotation[1]);
-  const modelZRotationRadians = degToRad(0 + obj.rotation[2]);
+  // const modelXRotationRadians = degToRad(0 + obj.rotation[0]);
+  // const modelYRotationRadians = degToRad(0 + obj.rotation[1]);
+  // const modelZRotationRadians = degToRad(0 + obj.rotation[2]);
 
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
   const projectionMatrix = mat4.perspective(fieldOfViewRadians, aspect, 1, 2000);
   
-  const A = Math.sin(modelXRotationRadians);
-  const B = Math.cos(modelXRotationRadians);
+  // const A = Math.sin(modelXRotationRadians);
+  // const B = Math.cos(modelXRotationRadians);
 
-  const cameraPosition = [2 * A, 0, 2 * B];
+  const cameraPosition = [0, 0, 2];
   const target = [0, 0, 0];
   const up = [0, 1, 0];
   const cameraMatrix = mat4.lookAt(cameraPosition, target, up);
   const viewMatrix = mat4.inverse(cameraMatrix);
-  const worldMatrix = mat4.create();
+  // const worldMatrix = mat4.create();
   const transformationMatrix = mat4.create(); 
-
+  const worldMatrix = obj.calcProjectionMatrix();
   // let worldMatrix = mat4.rotateXMatrix(modelXRotationRadians);
   // worldMatrix = mat4.rotate(worldMatrix, modelYRotationRadians, "y");
   // worldMatrix = mat4.rotate(worldMatrix, modelZRotationRadians, "z");

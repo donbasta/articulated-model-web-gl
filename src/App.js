@@ -45,10 +45,24 @@ const App = () => {
 
     useEffect(() => {
         createNewObject(sampleCube, "tes", [0, 0, 0]);
-        const sphereModel = createSphere([0.2, 0.2, 0.2], 0.2, 30, 30);
+        const sphereModel = createSphere([0.0, 0.0, 0.0], 0.2, 30, 30);
         // console.log(sphereModel);
-        createNewObject(sphereModel, "bola", [1, 0, 0]);
+        createNewObject(sphereModel, "bola1", [0.2, 0.2, 0.2]);
+        createNewObject(sphereModel, "bola2", [0.2, 0.2, -0.2]);
+        createNewObject(sphereModel, "bola3", [0.2, -0.2, 0.2]);
+        createNewObject(sphereModel, "bola4", [0.2, -0.2, -0.2]);
+        createNewObject(sphereModel, "bola5", [-0.2, 0.2, 0.2]);
+        createNewObject(sphereModel, "bola6", [-0.2, 0.2, -0.2]);
+        createNewObject(sphereModel, "bola7", [-0.2, -0.2, 0.2]);
+        createNewObject(sphereModel, "bola8", [-0.2, -0.2, -0.2]);
         objList[0].addChild(objList[1]);
+        objList[0].addChild(objList[2]);
+        objList[0].addChild(objList[3]);
+        objList[0].addChild(objList[4]);
+        objList[0].addChild(objList[5]);
+        objList[0].addChild(objList[6]);
+        objList[0].addChild(objList[7]);
+        objList[0].addChild(objList[8]);
 
         const canvas = canvasRef.current;
         const gl = canvas.getContext('webgl2') || canvas.getContext('experimental-webgl');
