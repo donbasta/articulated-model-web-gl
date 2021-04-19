@@ -67,7 +67,22 @@ const createProgramInfo = (textureType, shaderProgram, gl, texture) => {
         },
       };
       case "environment":
-        return null;
+        return {
+          environmentTexture: texture,
+          textureType: textureType,
+          program: shaderProgram,
+          attribLocations: {
+            positionLocation: gl.getAttribLocation(shaderProgram, "a_position"),
+            normalLocation: gl.getAttribLocation(shaderProgram, "a_normal")
+          },
+          uniformLocations: {
+            projectionLocation: gl.getUniformLocation(shaderProgram, "u_projection"),
+            viewLocation: gl.getUniformLocation(shaderProgram, "u_view"),
+            worldLocation: gl.getUniformLocation(shaderProgram, "u_world"),
+            textureLocation: gl.getUniformLocation(shaderProgram, "u_texture"),
+            worldCameraPositionLocation: gl.getUniformLocation(shaderProgram, "u_worldCameraPosition")
+          },
+        };
       case "bump":
         return null;
       default:

@@ -1,6 +1,10 @@
+import { loadEnvironmentTexture } from './environmentTextureUtils';
+import * as mat4 from './matrix';
+import * as samps from './samples';
+
 const initBuffersFromObject = (gl, object) => {
-  let positions = object.vertexArray;
-  let colors = object.colorArray;
+  const positions = object.vertexArray;
+  const colors = object.colorArray;
   let indices = object.indicesArray;
 
   const positionBuffer = gl.createBuffer();
@@ -57,36 +61,146 @@ const initBuffersWithImageTexture = (gl, object) => {
   };
 }
 
-const initBuffersWithEnvironmentTexture = (gl, object) => {
+const initBuffersWithEnvironmentTexture = (gl, object, texture) => {
+  const normals = samps.normals;
+  const positions = samps.positions;
+  const textures = texture;
 
+  const positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+  const normalBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+
+  return {
+    position: positionBuffer,
+    normal: normalBuffer,
+    texture: textures
+  }
 }
 
 const renderScene = (gl, programInfo, objList) => {
-  gl.clearColor(0.5, 0.5, 0.2, 0.8);  // Clear to black, fully opaque
-  gl.clearDepth(1.0);                 // Clear everything
-  gl.enable(gl.DEPTH_TEST);           // Enable depth testing
-  gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
+  gl.clearColor(0.5, 0.5, 0.2, 0.8); 
+  gl.clearDepth(1.0);                 
+  gl.enable(gl.DEPTH_TEST);          
+  gl.depthFunc(gl.LEQUAL);            
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+
+  // const objectBuffers = initBuffersWithEnvironmentTexture(gl, null);
+  // drawObjectEnvironmentShaders(gl, null, 0, objectBuffers, programInfo);
 
   for (const obj of objList) {
     let objectBuffers;
     switch (programInfo.textureType) {
       case "image":
         objectBuffers = initBuffersWithImageTexture(gl, obj);
+        drawObject(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo);
         break;
       case "environment":
-        console.log("TBD");
+        objectBuffers = initBuffersWithEnvironmentTexture(gl, obj, programInfo.environmentTexture);
+        drawObjectEnvironmentShaders(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo);
         break;
       default:
         objectBuffers = initBuffersFromObject(gl, obj);
+        drawObject(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo);
     }
-    drawObject(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo);
   }
 }
 
-const drawObject = (gl, obj, count, buffers, programInfo) => {
+const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo) => {
+  gl.useProgram(programInfo.program);
 
+  const fieldOfViewRadians = degToRad(60);
+  const modelXRotationRadians = degToRad(0 + obj.rotation[0]);
+  const modelYRotationRadians = degToRad(0 + obj.rotation[1]);
+
+  const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+  const projectionMatrix = mat4.perspective(fieldOfViewRadians, aspect, 1, 2000);
+  
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.projectionLocation,
+    false,
+    projectionMatrix
+  );
+
+  const cameraPosition = [0, 0, 2];
+  const target = [0, 0, 0];
+  const up = [0, 1, 0];
+  const cameraMatrix = mat4.lookAt(cameraPosition, target, up);
+  const viewMatrix = mat4.inverse(cameraMatrix);
+  let worldMatrix = mat4.rotateXMatrix(modelXRotationRadians);
+  worldMatrix = mat4.rotate(worldMatrix, modelYRotationRadians, "y");
+
+  {
+    const numComponents = 3;
+    const type = gl.FLOAT;
+    const normalize = false;
+    const stride = 0;
+    const offset = 0;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
+    gl.vertexAttribPointer(
+        programInfo.attribLocations.positionLocation,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset);
+    gl.enableVertexAttribArray(
+        programInfo.attribLocations.positionLocation);
+  }
+  {
+    const numComponents = 3;
+    const type = gl.FLOAT;
+    const normalize = false;
+    const stride = 0;
+    const offset = 0;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal);
+    gl.vertexAttribPointer(
+      programInfo.attribLocations.normalLocation,
+      numComponents,
+      type,
+      normalize,
+      stride,
+      offset
+    );
+    gl.enableVertexAttribArray(
+      programInfo.attribLocations.normalLocation
+    )
+  }
+  
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.projectionLocation, 
+    false, 
+    projectionMatrix
+  );
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.viewLocation, 
+    false, 
+    viewMatrix
+  );
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.worldLocation, 
+    false, 
+    worldMatrix
+  );
+  gl.uniform3fv(
+    programInfo.uniformLocations.worldCameraPositionLocation, 
+    cameraPosition
+  );
+
+  gl.uniform1i(
+    programInfo.uniformLocations.textureLocation, 
+    0
+  );
+
+  gl.drawArrays(gl.TRIANGLES, 0, 6 * 6);
+}
+
+const drawObject = (gl, obj, count, buffers, programInfo) => {
   const projectionMatrix = obj.calcProjectionMatrix();
 
   gl.useProgram(programInfo.program);
@@ -156,6 +270,26 @@ const drawObject = (gl, obj, count, buffers, programInfo) => {
     );
   }
 
+  if (programInfo.textureType === "environment") {
+    const numComponents = 3;
+    const type = gl.FLOAT;
+    const normalize = false;
+    const stride = 0;
+    const offset = 0;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal);
+    gl.vertexAttribPointer(
+      programInfo.attribLocations.normalLocation,
+      numComponents,
+      type,
+      normalize,
+      stride,
+      offset
+    );
+    gl.enableVertexAttribArray(
+      programInfo.attribLocations.normalLocation
+    )
+  }
+
   gl.uniformMatrix4fv(
     programInfo.uniformLocations.projectionMatrix,
     false,
@@ -176,5 +310,9 @@ const drawObject = (gl, obj, count, buffers, programInfo) => {
 }
 
 export {
-  renderScene,
+  renderScene
 } 
+
+const degToRad = (theta) => {
+  return theta * Math.PI / 180.0;
+}

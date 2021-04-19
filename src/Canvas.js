@@ -8,7 +8,7 @@ const Canvas = (props) => {
 
     useEffect(() => {
         const canvas = canvasRef.current 
-        setGl(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))   
+        setGl(canvas.getContext('webgl2') || canvas.getContext('experimental-webgl'))   
     }, [])
 
     return <canvas ref={canvasRef} width="640" height="480"></canvas>

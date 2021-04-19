@@ -5,10 +5,12 @@ import {initShaderProgram, createProgramInfo} from './programUtils';
 import Slider from './Slider'
 import smiley from "./smiley.png";
 
+import { sampleCube } from './sampleCube';
 import { createSphere } from './geometry';
 import balok from './models/balok';
 import GLObject from './GLObject';
 import { loadImageTexture } from './imageTextureUtils';
+import { loadEnvironmentTexture } from './environmentTextureUtils';
 
 const App = () => {
     const loaded = useRef(false);
@@ -17,7 +19,7 @@ const App = () => {
     const [objList, setObjList] = useState([]);
     const [selectedObjectId, setSelectedObjectId] = useState(0);
     const [glAttr, setGlAttr] = useState(null);
-    const [textureType, setTextureType] = useState("image");
+    const [textureType, setTextureType] = useState("environment");
 
     const createNewObject = (model, name, anchorPoint) => {
         const obj = new GLObject(model, name, anchorPoint);
@@ -29,6 +31,7 @@ const App = () => {
     };
 
     const loadProgram = (gl, texture) => {
+        console.log("fsidjfosij", textureType);
         const shaderProgram = initShaderProgram(textureType, gl);
         const programInfo = createProgramInfo(textureType, shaderProgram, gl, texture);
 
@@ -41,20 +44,22 @@ const App = () => {
     }
 
     useEffect(() => {
-        createNewObject(balok(0, 100, 0, 100, 0, 100), "badan", [0, 0, 0]);
-        createNewObject(balok(100, 300, 40, 60, 40, 60), "tangan kanan", [0, 0, 0]);
-        createNewObject(balok(-200, 0, 40, 60, 40, 60), "tangan kiri", [0, 0, 0]);
+        createNewObject(sampleCube, "tes", [0, 0, 0]);
+        // createNewObject(balok(100, 300, 40, 60, 40, 60), "tangan kanan", [0, 0, 0]);
+        // createNewObject(balok(-200, 0, 40, 60, 40, 60), "tangan kiri", [0, 0, 0]);
 
-        objList[0].addChild(objList[1]);
-        objList[0].addChild(objList[2]);
+        // objList[0].addChild(objList[1]);
+        // objList[0].addChild(objList[2]);
 
         const canvas = canvasRef.current;
-        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        const gl = canvas.getContext('webgl2') || canvas.getContext('experimental-webgl');
 
         let texture;
         if (textureType === "image") {
-            console.log("uwow");
             texture = loadImageTexture(gl, smiley);
+        }
+        if (textureType === "environment") {
+            texture = loadEnvironmentTexture(gl);
         }
 
         const programInfo = loadProgram(gl, texture);

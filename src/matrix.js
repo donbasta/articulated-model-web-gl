@@ -7,6 +7,19 @@ export const create = () => {
     ];
 };
 
+export const generateNormalsFromVertices = (mat) => {
+    let ret = [];
+    for (let i = 0; i < mat.length; i += 9) {
+        const v1 = [mat[i], mat[i + 1], mat[i + 2]];
+        const v2 = [mat[i + 3], mat[i + 4], mat[i + 5]];
+        const v3 = [mat[i + 6], mat[i + 7], mat[i + 8]];
+        const normalVector = crossProduct(sub(v2, v1), sub(v3, v1));
+        const unitNormalVector = normalize(normalVector);
+        ret = ret.concat(unitNormalVector, unitNormalVector, unitNormalVector);
+    }
+    return ret;
+}
+
 export const multiplyMatrixAndScalar = (matrix, scalar) => {
     for (let i = 0; i < matrix.length; i++) {
         matrix[i] *= scalar;
@@ -345,6 +358,33 @@ export const normalize = (v, dst) => {
           (tmp_22 * m32 + tmp_14 * m02 + tmp_19 * m12));
     dst[15] = d * ((tmp_22 * m22 + tmp_16 * m02 + tmp_21 * m12) -
           (tmp_20 * m12 + tmp_23 * m22 + tmp_17 * m02));
+
+    return dst;
+  }
+
+  export const lookAt = (cameraPosition, target, up, dst) => {
+    dst = dst || new Array(16);
+    var zAxis = normalize(
+        sub(cameraPosition, target));
+    var xAxis = normalize(crossProduct(up, zAxis));
+    var yAxis = normalize(crossProduct(zAxis, xAxis));
+
+    dst[ 0] = xAxis[0];
+    dst[ 1] = xAxis[1];
+    dst[ 2] = xAxis[2];
+    dst[ 3] = 0;
+    dst[ 4] = yAxis[0];
+    dst[ 5] = yAxis[1];
+    dst[ 6] = yAxis[2];
+    dst[ 7] = 0;
+    dst[ 8] = zAxis[0];
+    dst[ 9] = zAxis[1];
+    dst[10] = zAxis[2];
+    dst[11] = 0;
+    dst[12] = cameraPosition[0];
+    dst[13] = cameraPosition[1];
+    dst[14] = cameraPosition[2];
+    dst[15] = 1;
 
     return dst;
   }
