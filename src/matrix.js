@@ -166,6 +166,20 @@ const projector = {
 }
 
 export const getProjectorType = (projectorType) => {
+    if (projectorType === 'perspective') {
+        let f = 1.428;
+        let aspek = 480/640;
+        let near = 0.1
+        let far = 1000;
+        let rangeInv = 1.0 / (near - far);
+
+        return[
+            f * aspek, 0, 0, 0,
+            0, f, 0, 0,
+            0, 0, (near + far) *rangeInv, -1,
+            0, 0, near * far * rangeInv * 2, 0  
+        ]
+    }
     if (projector[projectorType] === undefined) {
         return projector['default'];
     }

@@ -6,6 +6,7 @@ const initShaderProgram = (gl) => {
     attribute vec4 aVertexColor;
 
     uniform mat4 uProjectionMatrix;
+    uniform mat4 uCameraMatrix;
     uniform vec3 uResolution;
 
     varying lowp vec4 vColor;
@@ -15,7 +16,7 @@ const initShaderProgram = (gl) => {
 
       vec3 pos = (uProjectionMatrix * aVertexPosition).xyz;
       vec3 a = pos / uResolution;
-      gl_Position = vec4(a, 1);
+      gl_Position = uCameraMatrix * vec4(a, 1);
     }
     `
   const fsSource = `
@@ -85,7 +86,7 @@ const initBuffersFromObject = (gl, object) => {
   };
 }
 
-const renderScene = (gl, programInfo, objList) => {
+const renderScene = (gl, programInfo, objList, depth) => {
   gl.clearColor(0.5, 0.5, 0.2, 0.8);  // Clear to black, fully opaque
   gl.clearDepth(1.0);                 // Clear everything
   gl.enable(gl.DEPTH_TEST);           // Enable depth testing
@@ -95,11 +96,11 @@ const renderScene = (gl, programInfo, objList) => {
 
   for (const obj of objList) {
     const objectBuffers = initBuffersFromObject(gl, obj);
-    drawObject(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo);
+    drawObject(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo, depth);
   }
 }
 
-const drawObject = (gl, obj, count, buffers, programInfo) => {
+const drawObject = (gl, obj, count, buffers, programInfo, depth) => {
 
   const projectionMatrix = obj.calcProjectionMatrix();
 
@@ -144,6 +145,15 @@ const drawObject = (gl, obj, count, buffers, programInfo) => {
     programInfo.uniformLocations.projectionMatrix,
     false,
     projectionMatrix
+  );
+
+  let cameraMatrix = mat4.getProjectorType('perspective');
+  cameraMatrix = mat4.translate(cameraMatrix, [0,0, depth]);
+  // console.log("ini jancok",cameraMatrix);
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.cameraMatrix,
+    false,
+    cameraMatrix
   );
 
   gl.uniform3fv(

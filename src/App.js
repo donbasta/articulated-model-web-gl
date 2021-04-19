@@ -17,6 +17,7 @@ const App = () => {
     const [objList, setObjList] = useState([]);
     const [selectedObjectId, setSelectedObjectId] = useState(0);
     const [glAttr, setGlAttr] = useState(null);
+    const [depth, setDepth] = useState(-1);
 
     const createNewObject = (model, name, anchorPoint, position, rotation) => {
         const obj = new GLObject(model, name, anchorPoint);
@@ -79,49 +80,49 @@ const App = () => {
             programInfo: programInfo,
         });
 
-        renderScene(gl, programInfo, objList);
+        renderScene(gl, programInfo, objList, depth);
     }, []);
 
     const handleX = (angle) => {
         console.log(objList);
         objList[selectedObjectId].rotateXObj(angle);
-        renderScene(glAttr.gl, glAttr.programInfo, objList);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     };
 
     const handleY = (angle) => {
         objList[selectedObjectId].rotateYObj(angle);
-        renderScene(glAttr.gl, glAttr.programInfo, objList);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     };
 
     const handleZ = (angle) => {
         objList[selectedObjectId].rotateZObj(angle);
-        renderScene(glAttr.gl, glAttr.programInfo, objList);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     };
 
     const handleZoom = (coef) => {
-        
-        renderScene(glAttr.gl, glAttr.programInfo, objList);
+        objList[selectedObjectId].scaleObj(coef, coef, coef);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     }
 
     const handleTranslateX = (coef) => {
         const obj = objList[selectedObjectId];
         const current = obj.position;
         obj.translateObj(coef, current[1], current[2]);
-        renderScene(glAttr.gl, glAttr.programInfo, objList);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     }
 
     const handleTranslateY = (coef) => {
         const obj = objList[selectedObjectId];
         const current = obj.position;
         obj.translateObj(current[0], coef, current[2]);
-        renderScene(glAttr.gl, glAttr.programInfo, objList);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     }
     
     const handleTranslateZ = (coef) => {
         const obj = objList[selectedObjectId];
         const current = obj.position;
         obj.translateObj(current[0], current[1], coef);
-        renderScene(glAttr.gl, glAttr.programInfo, objList);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     }
 
     const changeSelectedObjectId = (e) => {
@@ -208,17 +209,22 @@ const App = () => {
         console.log(e.target);
         const callback = (list) => {
             setObjList(list);
-            renderScene(glAttr.gl, glAttr.programInfo, objList);
+            renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
             
             // objList = list;
-            console.log("INI LIST", list);
-            console.log("INI OBJ LIST\n", objList);
+            // console.log("INI LIST", list);
+            // console.log("INI OBJ LIST\n", objList);
 
         }
         loadObject(e.target.files[0], callback);
         // setSelectedObjectId(e.target.value);
     }
 
+    const changeCameraDepth = (e) => {
+        setDepth(e.target.value);
+        console.log("INI DEPTH ", depth);
+        renderScene(glAttr.gl, glAttr.programInfo, objList, e.target.value);
+    }
     return (
         <div>
             <div className="canvas-container">
@@ -233,6 +239,14 @@ const App = () => {
                         )
                     })} 
                 </select>
+                <p> Camera Depth </p>
+                <select name="depth"  id="depth" onChange={changeCameraDepth}>
+                    <option key={-1} value={-1}>-1</option>
+                    <option key={-2} value={-2}>-2</option>
+                    <option key={-3} value={-3}>-3</option>
+                    <option key={-4} value={-4}>-4</option>
+                    <option key={-5} value={-5}>-5</option>
+                </select>
                 <p> Rotate x-axis </p>
                 <Slider min={0} max={360} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].rotation[0]} onChange={handleX}/>
                 <p> Rotate y-axis </p>
@@ -240,7 +254,7 @@ const App = () => {
                 <p> Rotate z-axis </p>
                 <Slider min={0} max={360} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].rotation[2]} onChange={handleZ}/>
                 <p> Scale </p>
-                <Slider min={30} max={600} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId]} onChange={handleZoom}/>
+                <Slider min={0.01} max={1} value={objList[selectedObjectId] === undefined ? 1 : objList[selectedObjectId].scale[0]} onChange={handleZoom}/>
                 <p> Translate x </p>
                 <Slider min={-50} max={50} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].position[0]} onChange={handleTranslateX}/>
                 <p> Translate Y </p>
