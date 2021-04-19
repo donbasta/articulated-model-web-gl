@@ -111,7 +111,8 @@ const renderScene = (gl, programInfo, objList) => {
         break;
       case "environment":
         objectBuffers = initBuffersWithEnvironmentTexture(gl, obj, programInfo.environmentTexture);
-        const count = obj.indexArray ? obj.indexArray.length : obj.positionArray.length / 3;
+        const count = obj.indexArray !== undefined ? obj.indexArray.length : obj.vertexArray.length / 3;
+        // const count = obj.positionArray.length / 3;
         drawObjectEnvironmentShaders(gl, obj, count, objectBuffers, programInfo);
         break;
       default:
@@ -132,20 +133,24 @@ const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo) => {
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
   const projectionMatrix = mat4.perspective(fieldOfViewRadians, aspect, 1, 2000);
   
-  gl.uniformMatrix4fv(
-    programInfo.uniformLocations.projectionLocation,
-    false,
-    projectionMatrix
-  );
+  const A = Math.sin(modelXRotationRadians);
+  const B = Math.cos(modelXRotationRadians);
 
-  const cameraPosition = [0, 0, 2];
+  const cameraPosition = [2 * A, 0, 2 * B];
   const target = [0, 0, 0];
   const up = [0, 1, 0];
   const cameraMatrix = mat4.lookAt(cameraPosition, target, up);
   const viewMatrix = mat4.inverse(cameraMatrix);
-  let worldMatrix = mat4.rotateXMatrix(modelXRotationRadians);
-  worldMatrix = mat4.rotate(worldMatrix, modelYRotationRadians, "y");
-  worldMatrix = mat4.rotate(worldMatrix, modelZRotationRadians, "z");
+  const worldMatrix = mat4.create();
+  const transformationMatrix = mat4.create(); 
+
+  // let worldMatrix = mat4.rotateXMatrix(modelXRotationRadians);
+  // worldMatrix = mat4.rotate(worldMatrix, modelYRotationRadians, "y");
+  // worldMatrix = mat4.rotate(worldMatrix, modelZRotationRadians, "z");
+
+  // let transformationMatrix = mat4.rotateXMatrix(modelXRotationRadians);
+  // transformationMatrix = mat4.rotate(transformationMatrix, modelYRotationRadians, "y");
+  // transformationMatrix = mat4.rotate(transformationMatrix, modelZRotationRadians, "z");
 
   {
     const numComponents = 3;
@@ -183,7 +188,12 @@ const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo) => {
       programInfo.attribLocations.normalLocation
     )
   }
-  
+
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.transormationLocation,
+    false,
+    transformationMatrix
+  );
   gl.uniformMatrix4fv(
     programInfo.uniformLocations.projectionLocation, 
     false, 

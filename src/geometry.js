@@ -1,7 +1,7 @@
 import * as mat4 from './matrix';
 import * as vec3 from './vector';
 
-const createSphere = (radius, thetaSegment, phiSegment) => {
+const createSphere = (center, radius, thetaSegment, phiSegment) => {
     const vertexNum = 2 + (thetaSegment - 1) * phiSegment;
     const indexNum = phiSegment * 6 + (thetaSegment - 2) * phiSegment * 6;
     const indices = new Array(indexNum);
@@ -14,7 +14,7 @@ const createSphere = (radius, thetaSegment, phiSegment) => {
     // setup positions & normals
     let posCount = 0;
     let normalCount = 0;
-    posCount = addVertex3(positions, posCount, 0, -radius, 0);
+    posCount = addVertex3(positions, posCount, 0 + center[0], -radius + center[1], 0 + center[2]);
     normalCount = addVertex3(normals, normalCount, 0, -1, 0);
     for (let hi = 1; hi < thetaSegment; hi++) {
       const theta = Math.PI - hi * thetaStep;
@@ -29,12 +29,12 @@ const createSphere = (radius, thetaSegment, phiSegment) => {
           radius * cosT,
           radius * sinT * sinP
         ];
-        posCount = addVertex3(positions, posCount, p[0], p[1], p[2]);
+        posCount = addVertex3(positions, posCount, p[0] + center[0], p[1] + center[1], p[2] + center[2]);
         const np = vec3.norm(p);
         normalCount = addVertex3(normals, normalCount, np[0], np[1], np[2]);
       }
     }
-    posCount = addVertex3(positions, posCount, 0, radius, 0);
+    posCount = addVertex3(positions, posCount, 0 + center[0], radius + center[1], 0 + center[2]);
     normalCount = addVertex3(normals, normalCount, 0, 1, 0);
   
     // setup indices

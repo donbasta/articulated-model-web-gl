@@ -80,7 +80,8 @@ const createProgramInfo = (textureType, shaderProgram, gl, texture) => {
             viewLocation: gl.getUniformLocation(shaderProgram, "u_view"),
             worldLocation: gl.getUniformLocation(shaderProgram, "u_world"),
             textureLocation: gl.getUniformLocation(shaderProgram, "u_texture"),
-            worldCameraPositionLocation: gl.getUniformLocation(shaderProgram, "u_worldCameraPosition")
+            worldCameraPositionLocation: gl.getUniformLocation(shaderProgram, "u_worldCameraPosition"),
+            transormationLocation: gl.getUniformLocation(shaderProgram, "u_transformation"),
           },
         };
       case "bump":

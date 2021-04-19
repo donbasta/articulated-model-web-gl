@@ -7,13 +7,14 @@ const ENVIRONMENT_VERTEX_SHADER =
     uniform mat4 u_projection;
     uniform mat4 u_view;
     uniform mat4 u_world;
+    uniform mat4 u_transformation;
 
     out vec3 v_worldPosition;
     out vec3 v_worldNormal;
 
     void main() {
     // Multiply the position by the matrix.
-    gl_Position = u_projection * u_view * u_world * a_position;
+    gl_Position = u_projection * u_view * u_world * u_transformation * a_position;
 
     // send the view position to the fragment shader
     v_worldPosition = (u_world * a_position).xyz;
