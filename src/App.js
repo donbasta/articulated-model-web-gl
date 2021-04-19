@@ -44,12 +44,10 @@ const App = () => {
     }
 
     useEffect(() => {
-        createNewObject(sampleCube, "tes", [0, 0, 0]);
-        // createNewObject(balok(100, 300, 40, 60, 40, 60), "tangan kanan", [0, 0, 0]);
-        // createNewObject(balok(-200, 0, 40, 60, 40, 60), "tangan kiri", [0, 0, 0]);
-
-        // objList[0].addChild(objList[1]);
-        // objList[0].addChild(objList[2]);
+        // createNewObject(sampleCube, "tes", [0, 0, 0]);
+        const sphereModel = createSphere(0.3, 30, 30);
+        console.log(sphereModel);
+        createNewObject(sphereModel, "bola", [1, 0, 0]);
 
         const canvas = canvasRef.current;
         const gl = canvas.getContext('webgl2') || canvas.getContext('experimental-webgl');

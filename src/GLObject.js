@@ -6,10 +6,13 @@ export default class GLObject {
     static addIdStatic() { this.idStatic = this.idStatic + 1; }
 
     constructor(model, name, anchorPoint) {
-        const {positions, colors, textures} = model;
+        const {positions, colors, textures, normals, indices} = model;
+
         this.vertexArray = positions;
         this.colorArray = colors;
         this.textureArray = textures;
+        this.normalArray = normals;
+        this.indexArray = indices;
         
         this.id = this.constructor.idStatic;
         this.constructor.addIdStatic();

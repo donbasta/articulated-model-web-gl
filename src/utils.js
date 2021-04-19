@@ -62,9 +62,10 @@ const initBuffersWithImageTexture = (gl, object) => {
 }
 
 const initBuffersWithEnvironmentTexture = (gl, object, texture) => {
-  const normals = samps.normals;
-  const positions = samps.positions;
+  const normals = object.normalArray || samps.normals;
+  const positions = object.vertexArray || samps.positions;
   const textures = texture;
+  let indices = object.indexArray;
 
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -74,10 +75,22 @@ const initBuffersWithEnvironmentTexture = (gl, object, texture) => {
   gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
 
+  const indexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+  const temp = [];
+  for(let i = 0; i < positions.length; i++) {
+    temp.push(i)
+  }
+  if (indices === undefined) {
+    indices = temp;
+  }
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
   return {
     position: positionBuffer,
     normal: normalBuffer,
-    texture: textures
+    texture: textures,
+    index: indexBuffer,
   }
 }
 
@@ -89,10 +102,6 @@ const renderScene = (gl, programInfo, objList) => {
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-
-  // const objectBuffers = initBuffersWithEnvironmentTexture(gl, null);
-  // drawObjectEnvironmentShaders(gl, null, 0, objectBuffers, programInfo);
-
   for (const obj of objList) {
     let objectBuffers;
     switch (programInfo.textureType) {
@@ -102,7 +111,8 @@ const renderScene = (gl, programInfo, objList) => {
         break;
       case "environment":
         objectBuffers = initBuffersWithEnvironmentTexture(gl, obj, programInfo.environmentTexture);
-        drawObjectEnvironmentShaders(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo);
+        const count = obj.indexArray ? obj.indexArray.length : obj.positionArray.length / 3;
+        drawObjectEnvironmentShaders(gl, obj, count, objectBuffers, programInfo);
         break;
       default:
         objectBuffers = initBuffersFromObject(gl, obj);
@@ -117,6 +127,7 @@ const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo) => {
   const fieldOfViewRadians = degToRad(60);
   const modelXRotationRadians = degToRad(0 + obj.rotation[0]);
   const modelYRotationRadians = degToRad(0 + obj.rotation[1]);
+  const modelZRotationRadians = degToRad(0 + obj.rotation[2]);
 
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
   const projectionMatrix = mat4.perspective(fieldOfViewRadians, aspect, 1, 2000);
@@ -134,6 +145,7 @@ const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo) => {
   const viewMatrix = mat4.inverse(cameraMatrix);
   let worldMatrix = mat4.rotateXMatrix(modelXRotationRadians);
   worldMatrix = mat4.rotate(worldMatrix, modelYRotationRadians, "y");
+  worldMatrix = mat4.rotate(worldMatrix, modelZRotationRadians, "z");
 
   {
     const numComponents = 3;
@@ -197,7 +209,12 @@ const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo) => {
     0
   );
 
-  gl.drawArrays(gl.TRIANGLES, 0, 6 * 6);
+  {
+    const vertexCount = count
+    const type = gl.UNSIGNED_SHORT;
+    const offset = 0;
+    gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
+  }
 }
 
 const drawObject = (gl, obj, count, buffers, programInfo) => {
@@ -268,26 +285,6 @@ const drawObject = (gl, obj, count, buffers, programInfo) => {
     gl.uniform1i(
       programInfo.uniformLocations.uSampler, 0
     );
-  }
-
-  if (programInfo.textureType === "environment") {
-    const numComponents = 3;
-    const type = gl.FLOAT;
-    const normalize = false;
-    const stride = 0;
-    const offset = 0;
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal);
-    gl.vertexAttribPointer(
-      programInfo.attribLocations.normalLocation,
-      numComponents,
-      type,
-      normalize,
-      stride,
-      offset
-    );
-    gl.enableVertexAttribArray(
-      programInfo.attribLocations.normalLocation
-    )
   }
 
   gl.uniformMatrix4fv(

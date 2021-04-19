@@ -4,9 +4,9 @@ import * as vec3 from './vector';
 const createSphere = (radius, thetaSegment, phiSegment) => {
     const vertexNum = 2 + (thetaSegment - 1) * phiSegment;
     const indexNum = phiSegment * 6 + (thetaSegment - 2) * phiSegment * 6;
-    const indices = new Int16Array(indexNum);
-    const positions = new Float32Array(3 * vertexNum);
-    const normals = new Float32Array(3 * vertexNum);
+    const indices = new Array(indexNum);
+    const positions = new Array(3 * vertexNum);
+    const normals = new Array(3 * vertexNum);
   
     const thetaStep = Math.PI / thetaSegment;
     const phiStep = 2.0 * Math.PI / phiSegment;
