@@ -1,9 +1,9 @@
-import pos_x from './resources/pos-x.jpg';
+import pos_x from './resources/rsz_smiley.jpg';
 import pos_y from './resources/pos-y.jpg';
 import pos_z from './resources/pos-z.jpg';
 import neg_x from './resources/neg-x.jpg';
 import neg_y from './resources/neg-y.jpg';
-import neg_z from './resources/neg-z.jpg';
+import neg_z from './resources/rsz_smiley.jpg';
 
 const loadEnvironmentTexture = (gl) => {
   const texture = gl.createTexture();
