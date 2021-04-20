@@ -1,70 +1,45 @@
-# Getting Started with Create React App
+# ARTICULATED MODEL
+## Deskripsion
+Program yang dibuat adalah pembuatan articulated model 3D yang dapat di manipulasi antara objeknya ataupun posisi kamera. Penampilan articulated model ini memanfaatkan WebGL sebagai tools untuk melakukan rendering terhadap titik-titik dan gambar yang ingin di render. Fitur-fitur yang difasilitasi dalam program ini dimulai dari mengatur view model kamera (menjauh atau mendekat), melakukan rotasi dan translasi pada object, menghidupkan atau mematikan shading pada object, dan menghidupkan atau mematikan animasi pada object.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Tampilan Program
 
-## Available Scripts
+## Requirement
+* Browser support WebGL
+* React to run the server
 
-In the project directory, you can run:
+## How to Run Program
+1. Masuklah ke directory project ini.
+2. Jalankan command berupa ```npm install``` pada command prompt (jika pertama kali).
+3. Jalankan command berupa ```npm start``` pada command prompt.
+4. Program akan secara otomatis terbuka di browser.
+5. Selamat menjalankan aplikasi Articulated Model Viewing.
 
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Functionality Help
+1. Rotasi Object
+Rotasi Object adalah fungsi untuk merotasi object. Terdapat 3 slider, yaitu:
+- Rotate x-axis : menrotasi object terhadap sumbu X
+- Rotate y-axis : menrotasi object terhadap sumbu y
+- Rotate z-axis : menrotasi object terhadap sumbu z
+2. Translate Object
+Translate Object adalah fungsi untuk mentranslasi object. Terdapat 3 slider, yaitu:
+- Translate X : mentranslate object terhadap pada X
+- Translate y : mentranslate object terhadap pada y
+- Translate z : mentranslate object terhadap pada z
+3. Save
+Save digunakan untuk menyimpan model object. Hal yang disimpan yaitu definisi object, hubungan parent-child, dan animasi dari setiap komponen model.
+4. Load
+Load digunakan untuk memuat model object.
+5. Select Object
+Select Object digunakan untuk memilih object yang ingin dimanipulasi.
+6. Camera Depth
+Camera Depth digunakan untuk memilih kedalam dari camera.
+7. Animasi
+Animasi adalah button yang digunakan untuk menjalankan skenario gerakan animasi dari model yang dipilih.
+8. Shader
+Shader adalah fungsi untuk menghidup-matikan shader dari object.
+## Author
+IF3260 Grafika Komputer Kelompok **10**
+* 13518017 - Farras Mohammad Hibban Faddila
+* 13518062 - Ricky Fernando
+* 13518074 - Iqbal Naufal
