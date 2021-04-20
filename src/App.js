@@ -2,7 +2,7 @@ import React, {useState, useRef, useEffect} from 'react'
 import './App.css'
 import {renderScene} from './utils'
 import {initShaderProgram, createProgramInfo} from './programUtils';
-import Slider from './Slider'
+import Slider from './components/Slider'
 import smiley from "./smiley.png";
 
 import { sampleCube } from './sampleCube';
@@ -19,11 +19,9 @@ const App = () => {
     const [objList, setObjList] = useState([]);
     const [selectedObjectId, setSelectedObjectId] = useState(0);
     const [glAttr, setGlAttr] = useState(null);
-    const [textureType, setTextureType] = useState("environment");
+    const [textureType, setTextureType] = useState("default");
     const [depth, setDepth] = useState(-2);
-    // const [playAnimation, setPlayAnimation] = useState(false);
-    let playAnimation = false;
-    // let animasiObject = [];
+    const [playAnimation, setPlayAnimation] = useState(false);
     const [animasiObject, setAnimasiObject] = useState([]);
 
     const createNewObject = (model, name, anchorPoint, position, rotation) => {
@@ -49,45 +47,45 @@ const App = () => {
 
         // ===================== UNCOMMENT UNTUK MEMULAI MODELING, SETELAH SELESAI SAVE UNTUK MENJADI JSON ===============
         // ===================== COMMENT DAN LOAD FILE SAVE, UNTUK MELIHAT APAKAH SESIMPAN ===============================
-        // createNewObject(balok(0, 400, 0, 400, 0, 200), "badan", [200, 200, 100], [0, 0, 0], [0,180,0]);
-        // createNewObject(balok(0, 300, 0, 200, 0, 190), "kepala", [150, 100, 95], [200, 500, 100], [360, 180, 180]);
-        // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kiri", [100, 0, 5], [25, 50, 50], [0, 180, 180]);
-        // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kanan", [0, 0, 5], [275, 50, 50], [0, 180, 180]);
-        // createNewObject(balok(0, 200, 0, 100, 0, 50), "mulut", [100, 75, 25], [150, 125, 200], [0, 180, 180]);
-        // createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kiri", [250, 50, 75], [50, 345, 100], [0, 270, 180]);
-        // createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kanan", [0, 50, 75], [350, 345, 100], [0, 90, 180]);
-        // createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kiri", [250, 50, 75], [50, 55, 100], [0, 270, 180]);
-        // createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kanan", [0, 50, 75], [350, 55, 100], [0, 90, 180]);
+        createNewObject(balok(0, 400, 0, 400, 0, 200), "badan", [200, 200, 100], [0, 0, 0], [0,180,0]);
+        createNewObject(balok(0, 300, 0, 200, 0, 190), "kepala", [150, 100, 95], [200, 500, 100], [360, 180, 180]);
+        createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kiri", [100, 0, 5], [25, 50, 50], [0, 180, 180]);
+        createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kanan", [0, 0, 5], [275, 50, 50], [0, 180, 180]);
+        createNewObject(balok(0, 200, 0, 100, 0, 50), "mulut", [100, 75, 25], [150, 125, 200], [0, 180, 180]);
+        createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kiri", [250, 50, 75], [50, 345, 100], [0, 270, 180]);
+        createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kanan", [0, 50, 75], [350, 345, 100], [0, 90, 180]);
+        createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kiri", [250, 50, 75], [50, 55, 100], [0, 270, 180]);
+        createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kanan", [0, 50, 75], [350, 55, 100], [0, 90, 180]);
 
-        createNewObject(sampleCube, "tes", [0, 0, 0]);
-        const sphereModel = createSphere([0.0, 0.0, 0.0], 0.2, 30, 30);
-        // console.log(sphereModel);
-        createNewObject(sphereModel, "bola1", [0.2, 0.2, 0.2]);
-        createNewObject(sphereModel, "bola2", [0.2, 0.2, -0.2]);
-        createNewObject(sphereModel, "bola3", [0.2, -0.2, 0.2]);
-        createNewObject(sphereModel, "bola4", [0.2, -0.2, -0.2]);
-        createNewObject(sphereModel, "bola5", [-0.2, 0.2, 0.2]);
-        createNewObject(sphereModel, "bola6", [-0.2, 0.2, -0.2]);
-        createNewObject(sphereModel, "bola7", [-0.2, -0.2, 0.2]);
-        createNewObject(sphereModel, "bola8", [-0.2, -0.2, -0.2]);
         objList[0].addChild(objList[1]);
-        objList[0].addChild(objList[2]);
-        objList[0].addChild(objList[3]);
-        objList[0].addChild(objList[4]);
+        objList[1].addChild(objList[2]);
+        objList[1].addChild(objList[3]);
+        objList[1].addChild(objList[4]);
         objList[0].addChild(objList[5]);
         objList[0].addChild(objList[6]);
         objList[0].addChild(objList[7]);
         objList[0].addChild(objList[8]);
-        
+
+        // createNewObject(sampleCube, "tes", [0, 0, 0], [0, 0, 0], [0, 0, 0]);
+        // const sphereModel = createSphere([0.0, 0.0, 0.0], 0.2, 30, 30);
+        // // console.log(sphereModel);
+        // createNewObject(sphereModel, "bola1", [0.2, 0.2, 0.2], [0, 0, 0], [0, 0, 0]);
+        // createNewObject(sphereModel, "bola2", [0.2, 0.2, -0.2], [0, 0, 0], [0, 0, 0]);
+        // createNewObject(sphereModel, "bola3", [0.2, -0.2, 0.2], [0, 0, 0], [0, 0, 0]);
+        // createNewObject(sphereModel, "bola4", [0.2, -0.2, -0.2], [0, 0, 0], [0, 0, 0]);
+        // createNewObject(sphereModel, "bola5", [-0.2, 0.2, 0.2], [0, 0, 0], [0, 0, 0]);
+        // createNewObject(sphereModel, "bola6", [-0.2, 0.2, -0.2], [0, 0, 0], [0, 0, 0]);
+        // createNewObject(sphereModel, "bola7", [-0.2, -0.2, 0.2], [0, 0, 0], [0, 0, 0]);
+        // createNewObject(sphereModel, "bola8", [-0.2, -0.2, -0.2], [0, 0, 0], [0, 0, 0]);
         // objList[0].addChild(objList[1]);
-        // objList[1].addChild(objList[2]);
-        // objList[1].addChild(objList[3]);
-        // objList[1].addChild(objList[4]);
+        // objList[0].addChild(objList[2]);
+        // objList[0].addChild(objList[3]);
+        // objList[0].addChild(objList[4]);
         // objList[0].addChild(objList[5]);
         // objList[0].addChild(objList[6]);
         // objList[0].addChild(objList[7]);
         // objList[0].addChild(objList[8]);
-        // console.log(objList);
+        
         const canvas = canvasRef.current;
         const gl = canvas.getContext('webgl2') || canvas.getContext('experimental-webgl');
 
@@ -244,24 +242,21 @@ const App = () => {
     }
 
     const handleLoad = (e) => {
-        // console.log(e.target);
         const callback = (list, animasiList) => {
             setObjList(list);
             renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
             setAnimasiObject(animasiList);
         }
         loadObject(e.target.files[0], callback);
-        // setSelectedObjectId(e.target.value);
     }
 
     const changeCameraDepth = (e) => {
         setDepth(e.target.value);
-        // console.log("INI DEPTH ", depth);
         renderScene(glAttr.gl, glAttr.programInfo, objList, e.target.value);
     }
 
     const playAnimasi = () => {
-        playAnimation = !playAnimation;
+        setPlayAnimation(!playAnimation);
         if (playAnimation) {
             requestAnimationFrame(render);
         }
@@ -270,7 +265,7 @@ const App = () => {
     const lerp = (a, b, t, baf) => {
         let hasilFloor = Math.floor(t);
         let sisaBagi = t % 1;
-        if (hasilFloor % 2 == 1 && baf) {
+        if (hasilFloor % 2 === 1 && baf) {
             return a * sisaBagi + b * (1 - sisaBagi);
         }
         return b * sisaBagi + a * (1 - sisaBagi);
@@ -332,7 +327,6 @@ const App = () => {
                 <Slider min={0.01} max={1} value={objList[selectedObjectId] === undefined ? 1 : objList[selectedObjectId].scale[0]} onChange={handleZoom}/>
 
                 <p> Translate x </p>
-                <Slider min={-50} max={50} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId]} onChange={handleTranslate}/>
                 <Slider min={-50} max={50} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].position[0]} onChange={handleTranslateX}/>
                 <p> Translate Y </p>
                 <Slider min={-50} max={50} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].position[1]} onChange={handleTranslateY}/>
@@ -344,9 +338,9 @@ const App = () => {
                 <button className="btn" onClick={applyEnvironmentTexture}>Apply environment texture</button>
                 <button className="btn" onClick={applyBumpTexture}>Apply bump texture</button>
 
-                <button onClick={saveObject}>Save Object</button>
+                <button className="btn" onClick={saveObject}>Save Object</button>
                 <input type="file" id="load" onChange={handleLoad}/>
-                <button onClick={playAnimasi}>Animasi</button>
+                <button className="btn" onClick={playAnimasi}>Animasi</button>
             </div>
         </div>
     )

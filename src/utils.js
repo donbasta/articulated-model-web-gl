@@ -107,22 +107,22 @@ const renderScene = (gl, programInfo, objList, depth) => {
     switch (programInfo.textureType) {
       case "image":
         objectBuffers = initBuffersWithImageTexture(gl, obj);
-        drawObject(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo);
+        drawObject(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo, depth);
         break;
       case "environment":
-        objectBuffers = initBuffersWithEnvironmentTexture(gl, obj, programInfo.environmentTexture);
+        objectBuffers = initBuffersWithEnvironmentTexture(gl, obj, programInfo.environmentTexture, depth);
         const count = obj.indexArray !== undefined ? obj.indexArray.length : obj.vertexArray.length / 3;
         // const count = obj.positionArray.length / 3;
         drawObjectEnvironmentShaders(gl, obj, count, objectBuffers, programInfo);
         break;
       default:
         objectBuffers = initBuffersFromObject(gl, obj);
-        drawObject(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo);
+        drawObject(gl, obj, obj.vertexArray.length / 3, objectBuffers, programInfo, depth);
     }
   }
 }
 
-const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo) => {
+const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo, depth) => {
   gl.useProgram(programInfo.program);
 
   const fieldOfViewRadians = degToRad(60);
@@ -227,7 +227,7 @@ const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo) => {
   }
 }
 
-const drawObject = (gl, obj, count, buffers, programInfo) => {
+const drawObject = (gl, obj, count, buffers, programInfo, depth) => {
   const projectionMatrix = obj.calcProjectionMatrix();
 
   gl.useProgram(programInfo.program);
@@ -304,7 +304,7 @@ const drawObject = (gl, obj, count, buffers, programInfo) => {
   );
 
   let cameraMatrix = mat4.getProjectorType('perspective');
-  cameraMatrix = mat4.translate(cameraMatrix, [0,0, depth]);
+  cameraMatrix = mat4.translate(cameraMatrix, [0, 0, depth]);
   // console.log("ini jancok",cameraMatrix);
   gl.uniformMatrix4fv(
     programInfo.uniformLocations.cameraMatrix,
