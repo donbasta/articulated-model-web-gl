@@ -94,7 +94,7 @@ const initBuffersWithEnvironmentTexture = (gl, object, texture) => {
   }
 }
 
-const renderScene = (gl, programInfo, objList) => {
+const renderScene = (gl, programInfo, objList, depth) => {
   gl.clearColor(0.5, 0.5, 0.2, 0.8); 
   gl.clearDepth(1.0);                 
   gl.enable(gl.DEPTH_TEST);          
@@ -301,6 +301,15 @@ const drawObject = (gl, obj, count, buffers, programInfo) => {
     programInfo.uniformLocations.projectionMatrix,
     false,
     projectionMatrix
+  );
+
+  let cameraMatrix = mat4.getProjectorType('perspective');
+  cameraMatrix = mat4.translate(cameraMatrix, [0,0, depth]);
+  // console.log("ini jancok",cameraMatrix);
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.cameraMatrix,
+    false,
+    cameraMatrix
   );
 
   gl.uniform3fv(
