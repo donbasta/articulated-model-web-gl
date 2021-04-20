@@ -1,4 +1,4 @@
-import * as mat4 from './matrix.js';
+import * as mat4 from './math/matrix.js';
 
 export default class GLObject {
     static idStatic = 0;

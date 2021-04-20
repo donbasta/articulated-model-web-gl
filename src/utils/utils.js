@@ -1,6 +1,5 @@
-import { loadEnvironmentTexture } from './environmentTextureUtils';
-import * as mat4 from './matrix';
-import * as samps from './samples';
+import * as mat4 from '../math/matrix';
+import * as samps from '../samples';
 
 const initBuffersFromObject = (gl, object) => {
   const positions = object.vertexArray;
@@ -112,7 +111,6 @@ const renderScene = (gl, programInfo, objList, depth) => {
       case "environment":
         objectBuffers = initBuffersWithEnvironmentTexture(gl, obj, programInfo.environmentTexture, depth);
         const count = obj.indexArray !== undefined ? obj.indexArray.length : obj.vertexArray.length / 3;
-        // const count = obj.positionArray.length / 3;
         drawObjectEnvironmentShaders(gl, obj, count, objectBuffers, programInfo);
         break;
       default:

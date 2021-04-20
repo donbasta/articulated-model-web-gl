@@ -1,5 +1,3 @@
-import img from "./smiley.png";
-
 const loadImageTexture = (gl, url) => {
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);

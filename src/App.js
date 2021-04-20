@@ -1,16 +1,16 @@
 import React, {useState, useRef, useEffect} from 'react'
 import './App.css'
-import {renderScene} from './utils'
-import {initShaderProgram, createProgramInfo} from './programUtils';
+import {renderScene} from './utils/utils'
+import {initShaderProgram, createProgramInfo} from './utils/programUtils';
 import Slider from './components/Slider'
 import smiley from "./smiley.png";
 
 import { sampleCube } from './sampleCube';
-import { createSphere } from './geometry';
+import { createSphere } from './math/geometry';
 import balok from './models/balok';
 import GLObject from './GLObject';
-import { loadImageTexture } from './imageTextureUtils';
-import { loadEnvironmentTexture } from './environmentTextureUtils';
+import { loadImageTexture } from './utils/imageTextureUtils';
+import { loadEnvironmentTexture } from './utils/environmentTextureUtils';
 
 const App = () => {
     const loaded = useRef(false);
@@ -19,7 +19,7 @@ const App = () => {
     const [objList, setObjList] = useState([]);
     const [selectedObjectId, setSelectedObjectId] = useState(0);
     const [glAttr, setGlAttr] = useState(null);
-    const [textureType, setTextureType] = useState("default");
+    const [textureType, setTextureType] = useState("image");
     const [depth, setDepth] = useState(-2);
     const [playAnimation, setPlayAnimation] = useState(false);
     const [animasiObject, setAnimasiObject] = useState([]);

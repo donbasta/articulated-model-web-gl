@@ -1,6 +1,6 @@
-import { COLOR_VERTEX_SHADER, COLOR_FRAGMENT_SHADER } from './shaders/colorTexture';
-import { IMAGE_VERTEX_SHADER, IMAGE_FRAGMENT_SHADER } from './shaders/imageTexture';
-import { ENVIRONMENT_VERTEX_SHADER, ENVIRONMENT_FRAGMENT_SHADER } from './shaders/environmentTexture';
+import { COLOR_VERTEX_SHADER, COLOR_FRAGMENT_SHADER } from '../shaders/colorTexture';
+import { IMAGE_VERTEX_SHADER, IMAGE_FRAGMENT_SHADER } from '../shaders/imageTexture';
+import { ENVIRONMENT_VERTEX_SHADER, ENVIRONMENT_FRAGMENT_SHADER } from '../shaders/environmentTexture';
 
 const vertexShaders = {
   "image": IMAGE_VERTEX_SHADER,

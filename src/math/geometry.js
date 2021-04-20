@@ -1,4 +1,3 @@
-import * as mat4 from './matrix';
 import * as vec3 from './vector';
 
 const createSphere = (center, radius, thetaSegment, phiSegment) => {
