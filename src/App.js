@@ -17,11 +17,15 @@ const App = () => {
     const [objList, setObjList] = useState([]);
     const [selectedObjectId, setSelectedObjectId] = useState(0);
     const [glAttr, setGlAttr] = useState(null);
-    const [depth, setDepth] = useState(-1);
+    const [depth, setDepth] = useState(-2);
+    // const [playAnimation, setPlayAnimation] = useState(false);
+    let playAnimation = false;
+    // let animasiObject = [];
+    const [animasiObject, setAnimasiObject] = useState([]);
 
     const createNewObject = (model, name, anchorPoint, position, rotation) => {
         const obj = new GLObject(model, name, anchorPoint);
-        console.log("done create with id : ", obj.id);
+        // console.log("done create with id : ", obj.id);
         obj.setPosition(position[0], position[1], position[2]);
         obj.setRotation(rotation[0], rotation[1], rotation[2]);
         obj.setScale(1, 1, 1);
@@ -33,21 +37,15 @@ const App = () => {
 
         // ===================== UNCOMMENT UNTUK MEMULAI MODELING, SETELAH SELESAI SAVE UNTUK MENJADI JSON ===============
         // ===================== COMMENT DAN LOAD FILE SAVE, UNTUK MELIHAT APAKAH SESIMPAN ===============================
-        // createNewObject(balok(0, 400, 0, 400, 0, 200), "badan", [200, 200, 100], [0, 0, 0], [0,0,0]);
+        // createNewObject(balok(0, 400, 0, 400, 0, 200), "badan", [200, 200, 100], [0, 0, 0], [0,180,0]);
         // createNewObject(balok(0, 300, 0, 200, 0, 190), "kepala", [150, 100, 95], [200, 500, 100], [360, 180, 180]);
         // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kiri", [100, 0, 5], [25, 50, 50], [0, 180, 180]);
         // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kanan", [0, 0, 5], [275, 50, 50], [0, 180, 180]);
         // createNewObject(balok(0, 200, 0, 100, 0, 50), "mulut", [100, 75, 25], [150, 125, 200], [0, 180, 180]);
-
-        
         // createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kiri", [250, 50, 75], [50, 345, 100], [0, 270, 180]);
         // createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kanan", [0, 50, 75], [350, 345, 100], [0, 90, 180]);
         // createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kiri", [250, 50, 75], [50, 55, 100], [0, 270, 180]);
         // createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kanan", [0, 50, 75], [350, 55, 100], [0, 90, 180]);
-        
-        // // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kanan", [50, 50, 5], [325, 0, 50], [180, 180, 180]);
-        // // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kiri", [50, 50, 5], [-25, 0, 50], [180, 180, 180]);
-        
         
         // objList[0].addChild(objList[1]);
         // objList[1].addChild(objList[2]);
@@ -84,18 +82,18 @@ const App = () => {
     }, []);
 
     const handleX = (angle) => {
-        console.log(objList);
-        objList[selectedObjectId].rotateXObj(angle);
+        // console.log(objList);
+        objList[selectedObjectId].rotateXObj(parseInt(angle));
         renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     };
 
     const handleY = (angle) => {
-        objList[selectedObjectId].rotateYObj(angle);
+        objList[selectedObjectId].rotateYObj(parseInt(angle));
         renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     };
 
     const handleZ = (angle) => {
-        objList[selectedObjectId].rotateZObj(angle);
+        objList[selectedObjectId].rotateZObj(parseInt(angle));
         renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     };
 
@@ -139,17 +137,20 @@ const App = () => {
     }
     
     const saveObject = () => {
+        let clone = JSON.parse(JSON.stringify(objList));
         let childs = [];
-        objList.forEach(obj => {
+        clone.forEach(obj => {
             let arr =[];
             obj.childs.forEach( e => {
                 arr.push(e.id)
             })
+            obj.childs = [];
             childs.push(arr)
         });
         let data = {
-            objList : objList,
-            childs : childs
+            objList : clone,
+            childs : childs,
+            animasi : animasiObject
         }
         let jsonData = JSON.stringify(data);
         download(jsonData, 'model.json', 'text/plain');
@@ -175,46 +176,29 @@ const App = () => {
                 const scale = obj.scale;
 
                 glObject.setParentTransformationMatrix(obj.parentTransformationMatrix);
-                // obj.setTransformMat(obj.transformMat);
-                // obj.localTransProjectionMat
-                // obj.projectionMat
                 glObject.setPosition(position[0], position[1], position[2]);
-                // obj.translateMat3
                 glObject.setRotation(rotation[0], rotation[1], rotation[2]);
-                // obj.rotationX
-                // obj.rotationY
-                // obj.rotationZ
                 glObject.setScale(scale[0], scale[1], scale[2]);
-                // obj.scaleMat3
-                // obj.anchorPointmat
-                // obj.rotateMat3
-
+               
                 objList.push(glObject);
-                // setObjList(objList);
             });
-            // console.log(list)
             for (let i = 0; i < data.childs.length; i++) {
                 const childs = data.childs[i];
                 childs.forEach(element => { 
-                    console.log("INI ELEMENT" , element)
                     objList[i].addChild(objList[element]);
                 });
             }
-            callback(objList);
+            callback(objList, data.animasi);
         });
         reader.readAsDataURL(file);
     };
 
     const handleLoad = (e) => {
-        console.log(e.target);
-        const callback = (list) => {
+        // console.log(e.target);
+        const callback = (list, animasiList) => {
             setObjList(list);
             renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
-            
-            // objList = list;
-            // console.log("INI LIST", list);
-            // console.log("INI OBJ LIST\n", objList);
-
+            setAnimasiObject(animasiList);
         }
         loadObject(e.target.files[0], callback);
         // setSelectedObjectId(e.target.value);
@@ -222,9 +206,47 @@ const App = () => {
 
     const changeCameraDepth = (e) => {
         setDepth(e.target.value);
-        console.log("INI DEPTH ", depth);
+        // console.log("INI DEPTH ", depth);
         renderScene(glAttr.gl, glAttr.programInfo, objList, e.target.value);
     }
+
+    const playAnimasi = () => {
+        playAnimation = !playAnimation;
+        if (playAnimation) {
+            requestAnimationFrame(render);
+        }
+    }
+
+    const lerp = (a, b, t) => {
+        let hasilFloor = Math.floor(t);
+        let sisaBagi = t % 1;
+        if (hasilFloor % 2 == 1) {
+            return a * sisaBagi + b * (1 - sisaBagi);
+        }
+        return b * sisaBagi + a * (1 - sisaBagi);
+    }
+    const positionNow = (now, animasiBadan) => {
+        return [
+            lerp(animasiBadan.start[0], animasiBadan.end[0], now/animasiBadan.duration),
+            lerp(animasiBadan.start[1], animasiBadan.end[1], now/animasiBadan.duration),
+            lerp(animasiBadan.start[2], animasiBadan.end[2], now/animasiBadan.duration)
+        ];
+    }
+
+    const render = (now) => {
+        if (playAnimation) {
+            for (let i = 0; i < objList.length; i++) {
+                let stateNow = positionNow(now, animasiObject[i]);
+                objList[i].rotateXObj(stateNow[0]);
+                objList[i].rotateYObj(stateNow[1]);
+                objList[i].rotateZObj(stateNow[2]);
+            }
+            
+            renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
+            requestAnimationFrame(render);            
+        }
+    }
+
     return (
         <div>
             <div className="canvas-container">
@@ -263,7 +285,11 @@ const App = () => {
                 <Slider min={-50} max={50} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].position[2]} onChange={handleTranslateZ}/>
                 <button onClick={saveObject}>Save Object</button>
                 <input type="file" id="load" onChange={handleLoad}/>
-                {/* <button onClick={loadObject}>Load Object</button> */}
+                <button onClick={playAnimasi}>Animasi</button>
+                {/* <button onClick={onOffShader}>Shader</button> */}
+                {/* <button onClick={onOffShader}>ENV</button> */}
+                {/* <button onClick={onOffShader}>Texture</button> */}
+                {/* <button onClick={onOffShader}>Bump</button> */}
             </div>
         </div>
     )
