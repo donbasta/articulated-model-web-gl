@@ -202,8 +202,8 @@ const App = () => {
             childs : childs,
             animasi : animasiObject
         }
-        let jsonData = JSON.stringify(data);
-        download(jsonData, 'model.json', 'text/plain');
+        let jsonData = JSON.stringify(data, undefined, 4);
+        download(jsonData, 'model.json', 'application/json');
     }
 
     const loadObject = (file, callback) => {
