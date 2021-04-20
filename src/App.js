@@ -217,19 +217,19 @@ const App = () => {
         }
     }
 
-    const lerp = (a, b, t) => {
+    const lerp = (a, b, t, baf) => {
         let hasilFloor = Math.floor(t);
         let sisaBagi = t % 1;
-        if (hasilFloor % 2 == 1) {
+        if (hasilFloor % 2 == 1 && baf) {
             return a * sisaBagi + b * (1 - sisaBagi);
         }
         return b * sisaBagi + a * (1 - sisaBagi);
     }
-    const positionNow = (now, animasiBadan) => {
+    const positionNow = (now, animasiObj) => {
         return [
-            lerp(animasiBadan.start[0], animasiBadan.end[0], now/animasiBadan.duration),
-            lerp(animasiBadan.start[1], animasiBadan.end[1], now/animasiBadan.duration),
-            lerp(animasiBadan.start[2], animasiBadan.end[2], now/animasiBadan.duration)
+            lerp(animasiObj.start[0], animasiObj.end[0], now/animasiObj.duration, animasiObj.baf),
+            lerp(animasiObj.start[1], animasiObj.end[1], now/animasiObj.duration, animasiObj.baf),
+            lerp(animasiObj.start[2], animasiObj.end[2], now/animasiObj.duration, animasiObj.baf)
         ];
     }
 
