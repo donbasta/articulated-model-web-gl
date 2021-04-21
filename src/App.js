@@ -48,7 +48,7 @@ const App = () => {
         // ===================== COMMENT DAN LOAD FILE SAVE, UNTUK MELIHAT APAKAH SESIMPAN ===============================
 
         // TEST 1: binatang 
-        // createNewObject(balok(0, 2, 0, 2, 0, 1.00), "badan", [1.00, 1.00, 0.50], [0, 0, 0], [0,180,0]);
+        createNewObject(balok(0, 2, 0, 2, 0, 1.00), "badan", [1.00, 1.00, 0.50], [0, 0, 0], [0, 0, 0]);
         // createNewObject(balok(0, 1.5, 0, 1, 0, 0.95), "kepala", [0.750, 0.5, 0.475], [1, 2.5, 0.5], [360, 180, 180]);
         // createNewObject(balok(0, 0.5, 0, 0.5, 0, 0.05), "telinga kiri", [0.5, 0, 0.025], [0.125, 0.250, 0.250], [0, 180, 180]);
         // createNewObject(balok(0, 0.5, 0, 0.5, 0, 0.05), "telinga kanan", [0, 0, 0.025], [1.375, 0.250, 0.250], [0, 180, 180]);
@@ -58,7 +58,7 @@ const App = () => {
         // createNewObject(balok(0, 1.25, 0, 0.5, 0, 0.75), "kaki kiri", [1.25, 0.250, 0.375], [0.250, 0.275, 0.500], [0, 270, 180]);
         // createNewObject(balok(0, 1.25, 0, 0.5, 0, 0.75), "kaki kanan", [0, 0.250, 0.375], [1.750, 0.275, 0.50], [0, 90, 180]);
 
-        // const sphereModel = createSphere([0.0, 0.0, 0.0], 0.1, 30, 30, "white");
+        // const sphereModel = createSphere([0.0, 0.0, 0.0], 0.5, 30, 30, "white");
         // createNewObject(sphereModel, "mata kiri", [0.5, 0.375, 0.125], [1, 0.625, 1.1], [0, 0, 0]);
         // createNewObject(sphereModel, "mata kanan", [0.5, 0.375, 0.125], [1.5, 0.625, 1.1], [0, 0, 0]);
         // const sphereModel2 = createSphere([0.0, 0.0, 0.0], 0.05, 30, 30, "black");
@@ -111,6 +111,9 @@ const App = () => {
         if (textureType === "environment") {
             texture = loadEnvironmentTexture(gl);
         }
+        if (textureType === "bump") {
+            texture = loadImageTexture(gl, smiley);
+        }
 
         const programInfo = loadProgram(gl, texture);
 
@@ -147,11 +150,6 @@ const App = () => {
         objList[selectedObjectId].rotateZObj(parseInt(angle));
         renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     };
-
-    const handleZoom = (coef) => {
-        objList[selectedObjectId].scaleObj(coef, coef, coef);
-        renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
-    }
 
     const handleTranslateX = (coef) => {
         const obj = objList[selectedObjectId];
@@ -343,9 +341,6 @@ const App = () => {
                 <Slider min={0} max={360} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].rotation[1]} onChange={handleY}/>
                 <p> Rotate z-axis </p>
                 <Slider min={0} max={360} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].rotation[2]} onChange={handleZ}/>
-
-                <p> Scale </p>
-                <Slider min={0.01} max={1} value={objList[selectedObjectId] === undefined ? 1 : objList[selectedObjectId].scale[0]} onChange={handleZoom}/>
 
                 <p> Translate x </p>
                 <Slider min={-500} max={500} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].position[0]} onChange={handleTranslateX}/>

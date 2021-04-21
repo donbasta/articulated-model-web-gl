@@ -91,10 +91,12 @@ const createProgramInfo = (textureType, shaderProgram, gl, texture) => {
         };
       case "bump":
         return {
+          bumpTexture: texture,
           textureType: textureType,
           program: shaderProgram,
           attribLocations: {
-            vertexPosition: gl.getAttribLocation(shaderProgram, 'vPosition'),
+            positionLocation: gl.getAttribLocation(shaderProgram, 'vPosition'),
+            textureCoord: gl.getAttribLocation(shaderProgram, 'vTexCoord'),
           },
           uniformLocations: {
             projectionLocation: gl.getUniformLocation(shaderProgram, 'Projection'),
@@ -104,8 +106,8 @@ const createProgramInfo = (textureType, shaderProgram, gl, texture) => {
             uSampler: gl.getUniformLocation(shaderProgram, 'texMap'),
             diffuseProduct: gl.getUniformLocation(shaderProgram, 'DiffuseProduct'),
             lightPosition: gl.getUniformLocation(shaderProgram, "LightPosition"),
-            normalCameraVector: gl.getUniformLocation(shaderProgram, "NormalMatrix"),
-            normalMatrix: gl.getUniformLocation(shaderProgram, "Normal"),
+            normalMatrixLocation: gl.getUniformLocation(shaderProgram, "NormalMatrix"),
+            normalLocation: gl.getUniformLocation(shaderProgram, "Normal"),
           }
         }
       default:

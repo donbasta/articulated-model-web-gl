@@ -62,6 +62,43 @@ const initBuffersWithImageTexture = (gl, object) => {
   };
 }
 
+const initBuffersWithBumpTexture = (gl, object) => {
+  const normals = object.normalArray || samps.normals;
+  const positions = object.vertexArray || samps.positions;
+  const textures = object.textureArray;
+  let indices = object.indexArray;
+
+  const positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+  const textureBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textures), gl.STATIC_DRAW);
+
+  const normalBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+
+  const indexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+  const temp = [];
+  for(let i = 0; i < positions.length; i++) {
+    temp.push(i)
+  }
+  if (indices === undefined) {
+    indices = temp;
+  }
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+  return {
+    position: positionBuffer,
+    normal: normalBuffer,
+    texture: textureBuffer,
+    index: indexBuffer,
+  }
+}
+
 const initBuffersWithEnvironmentTexture = (gl, object, texture) => {
   const normals = object.normalArray || samps.normals;
   const positions = object.vertexArray || samps.positions;
@@ -111,13 +148,132 @@ const renderScene = (gl, programInfo, objList, depth) => {
         drawObject(gl, obj, count, objectBuffers, programInfo, depth);
         break;
       case "environment":
-        objectBuffers = initBuffersWithEnvironmentTexture(gl, obj, programInfo.environmentTexture, depth);
+        objectBuffers = initBuffersWithEnvironmentTexture(gl, obj, programInfo.environmentTexture);
         drawObjectEnvironmentShaders(gl, obj, count, objectBuffers, programInfo, depth);
+        break;
+      case "bump":
+        objectBuffers = initBuffersWithBumpTexture(gl, obj);
+        drawObjectBumpShaders(gl, obj, count, objectBuffers, programInfo, depth);
         break;
       default:
         objectBuffers = initBuffersFromObject(gl, obj);
         drawObject(gl, obj, count, objectBuffers, programInfo, depth);
     }
+  }
+}
+
+const drawObjectBumpShaders = (gl, obj, count, buffers, programInfo, depth) => {
+  gl.useProgram(programInfo.program);
+
+  const fieldOfViewRadians = degToRad(FIELD_OF_VIEW_DEG);
+
+  const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+  const projectionMatrix = mat4.perspective(fieldOfViewRadians, aspect, 1, 2000);
+
+  const cameraPosition = [0, 0, 2];
+  const target = [0, 0, 0];
+  const up = [0, 1, 0];
+  const cameraMatrix = mat4.lookAt(cameraPosition, target, up);
+  let viewMatrix = mat4.inverse(cameraMatrix);
+  viewMatrix = mat4.translate(viewMatrix, [0, 0, depth]);
+  const transformationMatrix = mat4.create();
+  const worldMatrix = obj.calcProjectionMatrix();
+  const normalMatrix = [
+    1, 0, 0,
+    0, 1, 0,
+    0, 0, 1
+  ];
+  const lightPosition = [5, 5, 5, 5];
+  const normalVec4 = [1, 0, 0, 0];
+
+  {
+    const numComponents = 3;
+    const type = gl.FLOAT;
+    const normalize = false;
+    const stride = 0;
+    const offset = 0;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
+    gl.vertexAttribPointer(
+      programInfo.attribLocations.positionLocation,
+      numComponents,
+      type,
+      normalize,
+      stride,
+      offset
+    );
+    gl.enableVertexAttribArray(
+      programInfo.attribLocations.positionLocation
+    );
+  }
+  {
+    const numComponents = 2;
+    const type = gl.FLOAT;
+    const normalize = false;
+    const stride = 0;
+    const offset = 0;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.texture);
+    gl.vertexAttribPointer(
+      programInfo.attribLocations.textureCoord, 
+      numComponents,
+      type,
+      normalize, 
+      stride,
+      offset
+    );
+    gl.enableVertexAttribArray(
+      programInfo.attribLocations.textureCoord
+    );
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, programInfo.bumpTexture);
+    gl.uniform1i(
+      programInfo.uniformLocations.uSampler, 0
+    );
+  }
+
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.transformationLocation,
+    false,
+    transformationMatrix
+  );
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.projectionLocation, 
+    false, 
+    projectionMatrix
+  );
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.viewLocation, 
+    false, 
+    viewMatrix
+  );
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.worldLocation, 
+    false, 
+    worldMatrix
+  );
+  gl.uniformMatrix3fv(
+    programInfo.uniformLocations.normalMatrixLocation,
+    false,
+    normalMatrix
+  );
+  gl.uniform4fv(
+    programInfo.uniformLocations.lightPosition,
+    lightPosition
+  );
+  gl.uniform4fv(
+    programInfo.uniformLocations.diffuseProduct,
+    [10.0, 69.0, 20.0, 1.0]
+  );
+  gl.uniform4fv(
+    programInfo.uniformLocations.normalLocation,
+    normalVec4
+  );
+  
+  {
+    const vertexCount = count
+    const type = gl.UNSIGNED_SHORT;
+    const offset = 0;
+    gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
   }
 }
 
@@ -198,12 +354,10 @@ const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo, dept
     programInfo.uniformLocations.worldCameraPositionLocation, 
     cameraPosition
   );
-
   gl.uniform1i(
     programInfo.uniformLocations.textureLocation, 
     0
   );
-
   {
     const vertexCount = count
     const type = gl.UNSIGNED_SHORT;
