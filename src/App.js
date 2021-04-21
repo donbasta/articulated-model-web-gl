@@ -20,7 +20,8 @@ const App = () => {
     const [glAttr, setGlAttr] = useState(null);
     const [textureType, setTextureType] = useState("default");
     const [depth, setDepth] = useState(-2);
-    const [playAnimation, setPlayAnimation] = useState(false);
+    let playAnimation = false;
+    // const [playAnimation, setPlayAnimation] = useState(false);
     const [animasiObject, setAnimasiObject] = useState([
         {
             start: [
@@ -444,7 +445,8 @@ const App = () => {
     }
 
     const playAnimasi = () => {
-        setPlayAnimation(!playAnimation);
+        // setPlayAnimation(!playAnimation);
+        playAnimation = !playAnimation;
         if (playAnimation) {
             requestAnimationFrame(render);
         }
