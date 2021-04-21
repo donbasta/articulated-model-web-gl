@@ -18,7 +18,7 @@ const App = () => {
     const [objList, setObjList] = useState([]);
     const [selectedObjectId, setSelectedObjectId] = useState(0);
     const [glAttr, setGlAttr] = useState(null);
-    const [textureType, setTextureType] = useState("image");
+    const [textureType, setTextureType] = useState("default");
     const [depth, setDepth] = useState(-2);
     const [playAnimation, setPlayAnimation] = useState(false);
     const [animasiObject, setAnimasiObject] = useState([]);
@@ -48,45 +48,46 @@ const App = () => {
         // ===================== COMMENT DAN LOAD FILE SAVE, UNTUK MELIHAT APAKAH SESIMPAN ===============================
 
         // TEST 1: binatang 
-        createNewObject(balok(0, 400, 0, 400, 0, 200), "badan", [200, 200, 100], [0, 0, 0], [0,180,0]);
-        createNewObject(balok(0, 300, 0, 200, 0, 190), "kepala", [150, 100, 95], [200, 500, 100], [360, 180, 180]);
-        createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kiri", [100, 0, 5], [25, 50, 50], [0, 180, 180]);
-        createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kanan", [0, 0, 5], [275, 50, 50], [0, 180, 180]);
-        createNewObject(balok(0, 200, 0, 100, 0, 50), "mulut", [100, 75, 25], [150, 125, 200], [0, 180, 180]);
-        createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kiri", [250, 50, 75], [50, 345, 100], [0, 270, 180]);
-        createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kanan", [0, 50, 75], [350, 345, 100], [0, 90, 180]);
-        createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kiri", [250, 50, 75], [50, 55, 100], [0, 270, 180]);
-        createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kanan", [0, 50, 75], [350, 55, 100], [0, 90, 180]);
+        // createNewObject(balok(0, 400, 0, 400, 0, 200), "badan", [200, 200, 100], [0, 0, 0], [0,180,0]);
+        // createNewObject(balok(0, 300, 0, 200, 0, 190), "kepala", [150, 100, 95], [200, 500, 100], [360, 180, 180]);
+        // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kiri", [100, 0, 5], [25, 50, 50], [0, 180, 180]);
+        // createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kanan", [0, 0, 5], [275, 50, 50], [0, 180, 180]);
+        // createNewObject(balok(0, 200, 0, 100, 0, 50), "mulut", [100, 75, 25], [150, 125, 200], [0, 180, 180]);
+        // createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kiri", [250, 50, 75], [50, 345, 100], [0, 270, 180]);
+        // createNewObject(balok(0, 250, 0, 100, 0, 150), "tangan kanan", [0, 50, 75], [350, 345, 100], [0, 90, 180]);
+        // createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kiri", [250, 50, 75], [50, 55, 100], [0, 270, 180]);
+        // createNewObject(balok(0, 250, 0, 100, 0, 150), "kaki kanan", [0, 50, 75], [350, 55, 100], [0, 90, 180]);
 
-        objList[0].addChild(objList[1]);
-        objList[1].addChild(objList[2]);
-        objList[1].addChild(objList[3]);
-        objList[1].addChild(objList[4]);
-        objList[0].addChild(objList[5]);
-        objList[0].addChild(objList[6]);
-        objList[0].addChild(objList[7]);
-        objList[0].addChild(objList[8]);
-
-        // TEST 2: kubus + bola2
-        // createNewObject(sampleCube, "tes", [0, 0, 0], [0, 0, 0], [0, 0, 0]);
-        // const sphereModel = createSphere([0.0, 0.0, 0.0], 0.2, 30, 30);
-        // // console.log(sphereModel);
-        // createNewObject(sphereModel, "bola1", [0.2, 0.2, 0.2], [0, 0, 0], [0, 0, 0]);
-        // createNewObject(sphereModel, "bola2", [0.2, 0.2, -0.2], [0, 0, 0], [0, 0, 0]);
-        // createNewObject(sphereModel, "bola3", [0.2, -0.2, 0.2], [0, 0, 0], [0, 0, 0]);
-        // createNewObject(sphereModel, "bola4", [0.2, -0.2, -0.2], [0, 0, 0], [0, 0, 0]);
-        // createNewObject(sphereModel, "bola5", [-0.2, 0.2, 0.2], [0, 0, 0], [0, 0, 0]);
-        // createNewObject(sphereModel, "bola6", [-0.2, 0.2, -0.2], [0, 0, 0], [0, 0, 0]);
-        // createNewObject(sphereModel, "bola7", [-0.2, -0.2, 0.2], [0, 0, 0], [0, 0, 0]);
-        // createNewObject(sphereModel, "bola8", [-0.2, -0.2, -0.2], [0, 0, 0], [0, 0, 0]);
         // objList[0].addChild(objList[1]);
-        // objList[0].addChild(objList[2]);
-        // objList[0].addChild(objList[3]);
-        // objList[0].addChild(objList[4]);
+        // objList[1].addChild(objList[2]);
+        // objList[1].addChild(objList[3]);
+        // objList[1].addChild(objList[4]);
         // objList[0].addChild(objList[5]);
         // objList[0].addChild(objList[6]);
         // objList[0].addChild(objList[7]);
         // objList[0].addChild(objList[8]);
+
+        // TEST 2: kubus + bola2
+        createNewObject(balok(-0.3, 0.3, -0.3, 0.3, -0.3, 0.3), "badan", [0, 0, 0], [0, 0, 0], [0, 0, 0]);
+        // createNewObject(sampleCube, "tes", [0, 0, 0], [0, 0, 0], [0, 0, 0]);
+        const sphereModel = createSphere([0.0, 0.0, 0.0], 0.2, 30, 30);
+        // // console.log(sphereModel);
+        createNewObject(sphereModel, "bola1", [0.2, 0.2, 0.2], [0, 0, 0], [0, 0, 0]);
+        createNewObject(sphereModel, "bola2", [0.2, 0.2, -0.2], [0, 0, 0], [0, 0, 0]);
+        createNewObject(sphereModel, "bola3", [0.2, -0.2, 0.2], [0, 0, 0], [0, 0, 0]);
+        createNewObject(sphereModel, "bola4", [0.2, -0.2, -0.2], [0, 0, 0], [0, 0, 0]);
+        createNewObject(sphereModel, "bola5", [-0.2, 0.2, 0.2], [0, 0, 0], [0, 0, 0]);
+        createNewObject(sphereModel, "bola6", [-0.2, 0.2, -0.2], [0, 0, 0], [0, 0, 0]);
+        createNewObject(sphereModel, "bola7", [-0.2, -0.2, 0.2], [0, 0, 0], [0, 0, 0]);
+        createNewObject(sphereModel, "bola8", [-0.2, -0.2, -0.2], [0, 0, 0], [0, 0, 0]);
+        objList[0].addChild(objList[1]);
+        objList[0].addChild(objList[2]);
+        objList[0].addChild(objList[3]);
+        objList[0].addChild(objList[4]);
+        objList[0].addChild(objList[5]);
+        objList[0].addChild(objList[6]);
+        objList[0].addChild(objList[7]);
+        objList[0].addChild(objList[8]);
         
         const canvas = canvasRef.current;
         const gl = canvas.getContext('webgl2') || canvas.getContext('experimental-webgl');
@@ -109,6 +110,9 @@ const App = () => {
             let texture = null;
             if (textureType === "image") {
                 texture = loadImageTexture(glAttr.gl, smiley);
+            }
+            if (textureType === "environment") {
+                texture = loadEnvironmentTexture(glAttr.gl);
             }
             const programInfo = loadProgram(glAttr.gl, texture);
             renderScene(glAttr.gl, programInfo, objList);
@@ -140,21 +144,21 @@ const App = () => {
     const handleTranslateX = (coef) => {
         const obj = objList[selectedObjectId];
         const current = obj.position;
-        obj.translateObj(coef, current[1], current[2]);
+        obj.translateObj(coef / 10, current[1], current[2]);
         renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     }
 
     const handleTranslateY = (coef) => {
         const obj = objList[selectedObjectId];
         const current = obj.position;
-        obj.translateObj(current[0], coef, current[2]);
+        obj.translateObj(current[0], coef / 10, current[2]);
         renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     }
     
     const handleTranslateZ = (coef) => {
         const obj = objList[selectedObjectId];
         const current = obj.position;
-        obj.translateObj(current[0], current[1], coef);
+        obj.translateObj(current[0], current[1], coef / 10);
         renderScene(glAttr.gl, glAttr.programInfo, objList, depth);
     }
 

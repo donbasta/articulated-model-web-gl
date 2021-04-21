@@ -13,14 +13,14 @@ const ENVIRONMENT_VERTEX_SHADER =
     out vec3 v_worldNormal;
 
     void main() {
-    // Multiply the position by the matrix.
-    gl_Position = u_projection * u_view * u_world * u_transformation * a_position;
+        // Multiply the position by the matrix.
+        gl_Position = u_projection * u_view * u_world * u_transformation * a_position;
 
-    // send the view position to the fragment shader
-    v_worldPosition = (u_world * a_position).xyz;
+        // send the view position to the fragment shader
+        v_worldPosition = (u_world * a_position).xyz;
 
-    // orient the normals and pass to the fragment shader
-    v_worldNormal = mat3(u_world) * a_normal;
+        // orient the normals and pass to the fragment shader
+        v_worldNormal = mat3(u_world) * a_normal;
     }`;
 
 const ENVIRONMENT_FRAGMENT_SHADER = 
@@ -42,11 +42,11 @@ const ENVIRONMENT_FRAGMENT_SHADER =
     out vec4 outColor;
     
     void main() {
-    vec3 worldNormal = normalize(v_worldNormal);
-    vec3 eyeToSurfaceDir = normalize(v_worldPosition - u_worldCameraPosition);
-    vec3 direction = reflect(eyeToSurfaceDir,worldNormal);
-    
-    outColor = texture(u_texture, direction);
+        vec3 worldNormal = normalize(v_worldNormal);
+        vec3 eyeToSurfaceDir = normalize(v_worldPosition - u_worldCameraPosition);
+        vec3 direction = reflect(eyeToSurfaceDir, worldNormal);
+        
+        outColor = texture(u_texture, direction);
     }`;
 
 export {

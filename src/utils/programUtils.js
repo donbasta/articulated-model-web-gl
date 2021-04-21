@@ -61,8 +61,11 @@ const createProgramInfo = (textureType, shaderProgram, gl, texture) => {
           textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
         },
         uniformLocations: {
-          projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-          resolutionMatrix: gl.getUniformLocation(shaderProgram, 'uResolution'),
+          projectionLocation: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+          // resolutionMatrix: gl.getUniformLocation(shaderProgram, 'uResolution'),
+          viewLocation: gl.getUniformLocation(shaderProgram, "u_view"),
+          transformationLocation: gl.getUniformLocation(shaderProgram, "u_transformation"),
+          worldLocation: gl.getUniformLocation(shaderProgram, "u_world"),
           uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
         },
       };
@@ -81,7 +84,7 @@ const createProgramInfo = (textureType, shaderProgram, gl, texture) => {
             worldLocation: gl.getUniformLocation(shaderProgram, "u_world"),
             textureLocation: gl.getUniformLocation(shaderProgram, "u_texture"),
             worldCameraPositionLocation: gl.getUniformLocation(shaderProgram, "u_worldCameraPosition"),
-            transormationLocation: gl.getUniformLocation(shaderProgram, "u_transformation"),
+            transformationLocation: gl.getUniformLocation(shaderProgram, "u_transformation"),
           },
         };
       case "bump":
@@ -95,8 +98,11 @@ const createProgramInfo = (textureType, shaderProgram, gl, texture) => {
             vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
           },
           uniformLocations: {
-            projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-            resolutionMatrix: gl.getUniformLocation(shaderProgram, 'uResolution'),
+            projectionLocation: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+            //resolutionMatrix: gl.getUniformLocation(shaderProgram, 'uResolution'),
+            viewLocation: gl.getUniformLocation(shaderProgram, "u_view"),
+            transformationLocation: gl.getUniformLocation(shaderProgram, "u_transformation"),
+            worldLocation: gl.getUniformLocation(shaderProgram, "u_world"),
           }
         };
   }
