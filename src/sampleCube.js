@@ -1,0 +1,90 @@
+const baseVal = 0.3;
+
+export const sampleCube = {
+    positions: [
+        -baseVal, -baseVal,  -baseVal,
+        -baseVal,  baseVal,  -baseVal,
+        baseVal, -baseVal,  -baseVal,
+        -baseVal,  baseVal,  -baseVal,
+        baseVal,  baseVal,  -baseVal,
+        baseVal, -baseVal,  -baseVal,
+    
+        -baseVal, -baseVal,   baseVal,
+        baseVal, -baseVal,   baseVal,
+        -baseVal,  baseVal,   baseVal,
+        -baseVal,  baseVal,   baseVal,
+        baseVal, -baseVal,   baseVal,
+        baseVal,  baseVal,   baseVal,
+    
+        -baseVal,   baseVal, -baseVal,
+        -baseVal,   baseVal,  baseVal,
+        baseVal,   baseVal, -baseVal,
+        -baseVal,   baseVal,  baseVal,
+        baseVal,   baseVal,  baseVal,
+        baseVal,   baseVal, -baseVal,
+    
+        -baseVal,  -baseVal, -baseVal,
+        baseVal,  -baseVal, -baseVal,
+        -baseVal,  -baseVal,  baseVal,
+        -baseVal,  -baseVal,  baseVal,
+        baseVal,  -baseVal, -baseVal,
+        baseVal,  -baseVal,  baseVal,
+    
+        -baseVal,  -baseVal, -baseVal,
+        -baseVal,  -baseVal,  baseVal,
+        -baseVal,   baseVal, -baseVal,
+        -baseVal,  -baseVal,  baseVal,
+        -baseVal,   baseVal,  baseVal,
+        -baseVal,   baseVal, -baseVal,
+    
+         baseVal,  -baseVal, -baseVal,
+         baseVal,   baseVal, -baseVal,
+         baseVal,  -baseVal,  baseVal,
+         baseVal,  -baseVal,  baseVal,
+         baseVal,   baseVal, -baseVal,
+         baseVal,   baseVal,  baseVal,
+    ],
+    normals: [
+        0, 0, -1,
+        0, 0, -1,
+        0, 0, -1,
+        0, 0, -1,
+        0, 0, -1,
+        0, 0, -1,
+ 
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+ 
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+ 
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+ 
+       -1, 0, 0,
+       -1, 0, 0,
+       -1, 0, 0,
+       -1, 0, 0,
+       -1, 0, 0,
+       -1, 0, 0,
+ 
+        1, 0, 0,
+        1, 0, 0,
+        1, 0, 0,
+        1, 0, 0,
+        1, 0, 0,
+        1, 0, 0,
+    ]
+}

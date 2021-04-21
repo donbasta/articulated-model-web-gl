@@ -4,6 +4,15 @@ Program yang dibuat adalah pembuatan articulated model 3D yang dapat di manipula
 
 ## Tampilan Program
 
+### No mapping, with color buffer + Model 1
+![image1](./resources/manusia_color.jpg)
+
+### Image / Texture mapping + Model 2
+![image2](./resources/panda_image.jpg)
+
+### Environment mapping + Model 3
+![image3](./resources/doraemon_environment.jpg)
+
 ## Requirement
 * Browser support WebGL
 * React to run the server
@@ -18,12 +27,12 @@ Program yang dibuat adalah pembuatan articulated model 3D yang dapat di manipula
 ## Functionality Help
 1. Rotasi Object
 Rotasi Object adalah fungsi untuk merotasi object. Terdapat 3 slider, yaitu:
-- Rotate x-axis : menrotasi object terhadap sumbu X
-- Rotate y-axis : menrotasi object terhadap sumbu y
-- Rotate z-axis : menrotasi object terhadap sumbu z
+- Rotate x-axis : merotasi object terhadap sumbu x
+- Rotate y-axis : merotasi object terhadap sumbu y
+- Rotate z-axis : merotasi object terhadap sumbu z
 2. Translate Object
 Translate Object adalah fungsi untuk mentranslasi object. Terdapat 3 slider, yaitu:
-- Translate X : mentranslate object terhadap pada X
+- Translate x : mentranslate object terhadap pada x
 - Translate y : mentranslate object terhadap pada y
 - Translate z : mentranslate object terhadap pada z
 3. Save
@@ -43,3 +52,6 @@ IF3260 Grafika Komputer Kelompok **10**
 * 13518017 - Farras Mohammad Hibban Faddila
 * 13518062 - Ricky Fernando
 * 13518074 - Iqbal Naufal
+
+Link laporan:
+[Laporan Tugas Besar 3 Grafkom](https://docs.google.com/document/d/1bplUU3LiU1ltcuK-K4iIGlEvZ4jDUDj3ODBh5GBAhVI)
