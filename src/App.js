@@ -48,35 +48,35 @@ const App = () => {
         // ===================== COMMENT DAN LOAD FILE SAVE, UNTUK MELIHAT APAKAH SESIMPAN ===============================
 
         // TEST 1: binatang 
-        createNewObject(balok(0, 2, 0, 2, 0, 1.00), "badan", [1.00, 1.00, 0.50], [0, 0, 0], [0,180,0]);
-        createNewObject(balok(0, 1.5, 0, 1, 0, 0.95), "kepala", [0.750, 0.5, 0.475], [1, 2.5, 0.5], [360, 180, 180]);
-        createNewObject(balok(0, 0.5, 0, 0.5, 0, 0.05), "telinga kiri", [0.5, 0, 0.025], [0.125, 0.250, 0.250], [0, 180, 180]);
-        createNewObject(balok(0, 0.5, 0, 0.5, 0, 0.05), "telinga kanan", [0, 0, 0.025], [1.375, 0.250, 0.250], [0, 180, 180]);
-        createNewObject(balok(0, 1, 0, 0.5, 0, 0.25), "mulut", [0.5, 0.375, 0.125], [0.75, 0.625, 1.00], [0, 180, 180]);
-        createNewObject(balok(0, 1.25, 0, 0.5, 0, 0.75), "tangan kiri", [1.25, 0.25, 0.375], [0.250, 1.725, 0.50], [0, 270, 180]);
-        createNewObject(balok(0, 1.25, 0, 0.5, 0, 0.75), "tangan kanan", [0, 0.25, 0.375], [1.750, 1.725, 0.500], [0, 90, 180]);
-        createNewObject(balok(0, 1.25, 0, 0.5, 0, 0.75), "kaki kiri", [1.25, 0.250, 0.375], [0.250, 0.275, 0.500], [0, 270, 180]);
-        createNewObject(balok(0, 1.25, 0, 0.5, 0, 0.75), "kaki kanan", [0, 0.250, 0.375], [1.750, 0.275, 0.50], [0, 90, 180]);
+        // createNewObject(balok(0, 2, 0, 2, 0, 1.00), "badan", [1.00, 1.00, 0.50], [0, 0, 0], [0,180,0]);
+        // createNewObject(balok(0, 1.5, 0, 1, 0, 0.95), "kepala", [0.750, 0.5, 0.475], [1, 2.5, 0.5], [360, 180, 180]);
+        // createNewObject(balok(0, 0.5, 0, 0.5, 0, 0.05), "telinga kiri", [0.5, 0, 0.025], [0.125, 0.250, 0.250], [0, 180, 180]);
+        // createNewObject(balok(0, 0.5, 0, 0.5, 0, 0.05), "telinga kanan", [0, 0, 0.025], [1.375, 0.250, 0.250], [0, 180, 180]);
+        // createNewObject(balok(0, 1, 0, 0.5, 0, 0.25), "mulut", [0.5, 0.375, 0.125], [0.75, 0.625, 1.00], [0, 180, 180]);
+        // createNewObject(balok(0, 1.25, 0, 0.5, 0, 0.75), "tangan kiri", [1.25, 0.25, 0.375], [0.250, 1.725, 0.50], [0, 270, 180]);
+        // createNewObject(balok(0, 1.25, 0, 0.5, 0, 0.75), "tangan kanan", [0, 0.25, 0.375], [1.750, 1.725, 0.500], [0, 90, 180]);
+        // createNewObject(balok(0, 1.25, 0, 0.5, 0, 0.75), "kaki kiri", [1.25, 0.250, 0.375], [0.250, 0.275, 0.500], [0, 270, 180]);
+        // createNewObject(balok(0, 1.25, 0, 0.5, 0, 0.75), "kaki kanan", [0, 0.250, 0.375], [1.750, 0.275, 0.50], [0, 90, 180]);
 
-        const sphereModel = createSphere([0.0, 0.0, 0.0], 0.1, 30, 30, "white");
-        createNewObject(sphereModel, "mata kiri", [0.5, 0.375, 0.125], [1, 0.625, 1.1], [0, 0, 0]);
-        createNewObject(sphereModel, "mata kanan", [0.5, 0.375, 0.125], [1.5, 0.625, 1.1], [0, 0, 0]);
-        const sphereModel2 = createSphere([0.0, 0.0, 0.0], 0.05, 30, 30, "black");
-        createNewObject(sphereModel2, "bola mata kiri", [1, 0.6, 1.0], [1, 0.625, 1.1], [0, 0, 0]);
-        createNewObject(sphereModel2, "bola mata kanan", [1, 0.6, 1.0], [1, 0.625, 1.1], [0, 0, 0]);
+        // const sphereModel = createSphere([0.0, 0.0, 0.0], 0.1, 30, 30, "white");
+        // createNewObject(sphereModel, "mata kiri", [0.5, 0.375, 0.125], [1, 0.625, 1.1], [0, 0, 0]);
+        // createNewObject(sphereModel, "mata kanan", [0.5, 0.375, 0.125], [1.5, 0.625, 1.1], [0, 0, 0]);
+        // const sphereModel2 = createSphere([0.0, 0.0, 0.0], 0.05, 30, 30, "black");
+        // createNewObject(sphereModel2, "bola mata kiri", [1, 0.6, 1.0], [1, 0.625, 1.1], [0, 0, 0]);
+        // createNewObject(sphereModel2, "bola mata kanan", [1, 0.6, 1.0], [1, 0.625, 1.1], [0, 0, 0]);
 
-        objList[0].addChild(objList[1]);
-        objList[1].addChild(objList[2]);
-        objList[1].addChild(objList[3]);
-        objList[1].addChild(objList[4]);
-        objList[0].addChild(objList[5]);
-        objList[0].addChild(objList[6]);
-        objList[0].addChild(objList[7]);
-        objList[0].addChild(objList[8]);
-        objList[1].addChild(objList[9]);
-        objList[1].addChild(objList[10]);
-        objList[9].addChild(objList[11]);
-        objList[10].addChild(objList[12]);
+        // objList[0].addChild(objList[1]);
+        // objList[1].addChild(objList[2]);
+        // objList[1].addChild(objList[3]);
+        // objList[1].addChild(objList[4]);
+        // objList[0].addChild(objList[5]);
+        // objList[0].addChild(objList[6]);
+        // objList[0].addChild(objList[7]);
+        // objList[0].addChild(objList[8]);
+        // objList[1].addChild(objList[9]);
+        // objList[1].addChild(objList[10]);
+        // objList[9].addChild(objList[11]);
+        // objList[10].addChild(objList[12]);
 
         // const sphereModel = createSphere([0.0, 0.0, 0.0], 0.5, 30, 30);
         // createNewObject(sphereModel, "bola", [0, 0, 0], [0, 0, 0], [0, 0, 0]);
@@ -237,7 +237,7 @@ const App = () => {
                     colors : obj.colorArray,
                     indices: obj.indexArray,
                     normals: obj.normalArray,
-                    // textures: obj.textureArray,
+                    textures: obj.textureArray,
                 }
                 const glObject = new GLObject(balok, obj.name, obj.anchorPoint);
                 const position = obj.position;
