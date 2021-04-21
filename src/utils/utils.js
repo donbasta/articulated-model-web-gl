@@ -97,11 +97,10 @@ const initBuffersWithEnvironmentTexture = (gl, object, texture) => {
 
 const renderScene = (gl, programInfo, objList, depth) => {
   gl.clearColor(0.5, 0.5, 0.2, 0.8); 
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.clearDepth(1.0);                 
   gl.enable(gl.DEPTH_TEST);          
-  gl.depthFunc(gl.LEQUAL);            
-
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.depthFunc(gl.LEQUAL);
 
   for (const obj of objList) {
     let objectBuffers;
@@ -135,7 +134,6 @@ const drawObjectEnvironmentShaders = (gl, obj, count, buffers, programInfo, dept
   const up = [0, 1, 0];
   const cameraMatrix = mat4.lookAt(cameraPosition, target, up);
   let viewMatrix = mat4.inverse(cameraMatrix);
-  console.log(depth);
   viewMatrix = mat4.translate(viewMatrix, [0, 0, depth]);
   const transformationMatrix = mat4.create();
   const worldMatrix = obj.calcProjectionMatrix();
@@ -291,7 +289,6 @@ const drawObject = (gl, obj, count, buffers, programInfo, depth) => {
     );
 
     gl.activeTexture(gl.TEXTURE0);
-    console.log("test", programInfo.imageTexture)
     gl.bindTexture(gl.TEXTURE_2D, programInfo.imageTexture);
     gl.uniform1i(
       programInfo.uniformLocations.uSampler, 0

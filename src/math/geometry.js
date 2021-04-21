@@ -1,11 +1,37 @@
 import * as vec3 from './vector';
 
-const createSphere = (center, radius, thetaSegment, phiSegment) => {
+const createSphere = (center, radius, thetaSegment, phiSegment, color) => {
     const vertexNum = 2 + (thetaSegment - 1) * phiSegment;
     const indexNum = phiSegment * 6 + (thetaSegment - 2) * phiSegment * 6;
     const indices = new Array(indexNum);
     const positions = new Array(3 * vertexNum);
     const normals = new Array(3 * vertexNum);
+    const textures = new Array(2 * indexNum);
+    const colors = new Array(4 * indexNum);
+
+    
+    for (let i = 0; i < colors.length / 4; i += 4) {
+      if (color === "white") {
+        colors[i] = 1.0;
+        colors[i + 1] = 1.0;
+        colors[i + 2] = 1.0;
+        colors[i + 3] = 1.0;
+      } else if (color === "black") {
+        colors[i] = 0.0;
+        colors[i + 1] = 0.0;
+        colors[i + 2] = 0.0;
+        colors[i + 3] = 0.0;
+      }
+    }
+
+    for (let i = 0; i < textures.length / 3; i += 6) {
+      textures[i] = 0.0;
+      textures[i + 1] = 0.0;
+      textures[i + 2] = 0.0;
+      textures[i + 3] = 1.0;
+      textures[i + 4] = 1.0;
+      textures[i + 5] = 1.0;
+    }
   
     const thetaStep = Math.PI / thetaSegment;
     const phiStep = 2.0 * Math.PI / phiSegment;
@@ -65,6 +91,8 @@ const createSphere = (center, radius, thetaSegment, phiSegment) => {
       indices: indices,
       positions: positions,
       normals: normals,
+      textures: textures,
+      colors: colors,
     };
   };
 
