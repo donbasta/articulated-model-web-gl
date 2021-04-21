@@ -520,14 +520,18 @@ const App = () => {
                 <p> Translate Z </p>
                 <Slider min={-500} max={500} value={objList[selectedObjectId] === undefined ? 0 : objList[selectedObjectId].position[2]} onChange={handleTranslateZ}/>
 
-                <button className="btn" onClick={applyNoTexture}>Apply no texture</button>
-                <button className="btn" onClick={applyImageTexture}>Apply image texture</button>
-                <button className="btn" onClick={applyEnvironmentTexture}>Apply environment texture</button>
-                <button className="btn" onClick={applyBumpTexture}>Apply bump texture</button>
+                <div style={{textAlign: "center"}}>
 
-                <button className="btn" onClick={saveObject}>Save Object</button>
-                <input type="file" id="load" onChange={handleLoad}/>
-                <button className="btn" onClick={playAnimasi}>Animasi</button>
+                    <button className="btn" onClick={applyNoTexture}>Apply no texture</button>
+                    <button className="btn" onClick={applyImageTexture}>Apply image texture</button>
+                    <button className="btn" onClick={applyEnvironmentTexture}>Apply environment texture</button>
+                    <button className="btn" onClick={applyBumpTexture}>Apply bump texture</button>
+
+                    <button className="btn" onClick={saveObject}>Save Object</button>
+                    <input type="file" id="load" onChange={handleLoad}/>
+                    <button className="btn" onClick={playAnimasi}>Animasi</button>
+
+                </div>
             </div>
         </div>
     )
