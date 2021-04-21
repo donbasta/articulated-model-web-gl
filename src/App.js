@@ -15,7 +15,6 @@ import { loadEnvironmentTexture } from './utils/environmentTextureUtils';
 const App = () => {
     const loaded = useRef(false);
     const canvasRef = useRef(null);
-    const [saveUrl, setSaveUrl] = useState(null);
     const [objList, setObjList] = useState([]);
     const [selectedObjectId, setSelectedObjectId] = useState(0);
     const [glAttr, setGlAttr] = useState(null);
@@ -47,6 +46,8 @@ const App = () => {
 
         // ===================== UNCOMMENT UNTUK MEMULAI MODELING, SETELAH SELESAI SAVE UNTUK MENJADI JSON ===============
         // ===================== COMMENT DAN LOAD FILE SAVE, UNTUK MELIHAT APAKAH SESIMPAN ===============================
+
+        // TEST 1: binatang 
         createNewObject(balok(0, 400, 0, 400, 0, 200), "badan", [200, 200, 100], [0, 0, 0], [0,180,0]);
         createNewObject(balok(0, 300, 0, 200, 0, 190), "kepala", [150, 100, 95], [200, 500, 100], [360, 180, 180]);
         createNewObject(balok(0, 100, 0, 100, 0, 10), "telinga kiri", [100, 0, 5], [25, 50, 50], [0, 180, 180]);
@@ -66,6 +67,7 @@ const App = () => {
         objList[0].addChild(objList[7]);
         objList[0].addChild(objList[8]);
 
+        // TEST 2: kubus + bola2
         // createNewObject(sampleCube, "tes", [0, 0, 0], [0, 0, 0], [0, 0, 0]);
         // const sphereModel = createSphere([0.0, 0.0, 0.0], 0.2, 30, 30);
         // // console.log(sphereModel);

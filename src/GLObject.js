@@ -88,11 +88,7 @@ export default class GLObject {
     // Translate the object
     translateObj(deltaX, deltaY, deltaZ) {
         this.position = [deltaX, deltaY, deltaZ];
-        // const [a, b, c] = this.anchorPoint;
-        // this.translateMat3 = mat4.translationMatrix(deltaX + a, deltaY + b, deltaZ + c);
         this.transformChild();
-        // this.anchorPoint = mat4.translate(this.anchorPoint, [deltaX, deltaY, deltaZ]);
-        // this.transformChild();
     }
 
     // Rotate the object
@@ -132,12 +128,10 @@ export default class GLObject {
         const [scaleX, scaleY, scaleZ] = this.scale;
 
         this.anchorPointmat = mat4.translationMatrix(-anchorPointX, -anchorPointY, -anchorPointZ);
-        // console.log("ini di calcProj", sudutX, sudutY, sudutZ)
         this.rotateMat3 = mat4.rotateMatrix(sudutX, sudutY, sudutZ);
         this.translateMat3 = mat4.translationMatrix(posX, posY, posZ);
         this.scaleMat3 = mat4.scaleMatrix(scaleX, scaleY, scaleZ);
 
-        // console.log("ini anchormat\n", this.parentTransformationMatrix)
         return mat4.multiplyMatrices(
             this.parentTransformationMatrix,
             mat4.multiplyMatrices(
