@@ -20,8 +20,23 @@ const createSphere = (center, radius, thetaSegment, phiSegment, color) => {
         colors[i] = 0.0;
         colors[i + 1] = 0.0;
         colors[i + 2] = 0.0;
-        colors[i + 3] = 0.0;
-      }
+        colors[i + 3] = 1.0;
+      } else if (color === "green") {
+        colors[i] = 0.0;
+        colors[i + 1] = 1.0;
+        colors[i + 2] = 0.0;
+        colors[i + 3] = 1.0;
+      } else if (color === "biru muda") {
+        colors[i] = 0.5;
+        colors[i + 1] = 0.75;
+        colors[i + 2] = 1.0;
+        colors[i + 3] = 1.0;
+      } else if (color === "red") {
+        colors[i] = 1;
+        colors[i + 1] = 0.0;
+        colors[i + 2] = 0.0;
+        colors[i + 3] = 1.0;
+      } 
     }
 
     for (let i = 0; i < textures.length / 3; i += 6) {
