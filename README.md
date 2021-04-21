@@ -52,3 +52,6 @@ IF3260 Grafika Komputer Kelompok **10**
 * 13518017 - Farras Mohammad Hibban Faddila
 * 13518062 - Ricky Fernando
 * 13518074 - Iqbal Naufal
+
+Link laporan:
+[Laporan Tugas Besar 3 Grafkom](https://docs.google.com/document/d/1bplUU3LiU1ltcuK-K4iIGlEvZ4jDUDj3ODBh5GBAhVI)
