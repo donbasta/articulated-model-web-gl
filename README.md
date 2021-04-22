@@ -1,5 +1,5 @@
 # ARTICULATED MODEL
-## Deskripsion
+## Deskripsi
 Program yang dibuat adalah pembuatan articulated model 3D yang dapat di manipulasi antara objeknya ataupun posisi kamera. Penampilan articulated model ini memanfaatkan WebGL sebagai tools untuk melakukan rendering terhadap titik-titik dan gambar yang ingin di render. Fitur-fitur yang difasilitasi dalam program ini dimulai dari mengatur view model kamera (menjauh atau mendekat), melakukan rotasi dan translasi pada object, menghidupkan atau mematikan shading pada object, dan menghidupkan atau mematikan animasi pada object.
 
 ## Tampilan Program
