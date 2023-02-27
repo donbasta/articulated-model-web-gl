@@ -14,4 +14,4 @@ const Canvas = (props) => {
     return <canvas ref={canvasRef} width="640" height="480"></canvas>
 }
 
-export default Canvas
+export default Canvas;

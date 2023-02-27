@@ -19,7 +19,7 @@ const Slider = (props) => {
         });
         props.onChange(slider.value);
     }
-    //tambahin state value sama onSlide
+
     return (
         <div className="slidecontainer">
             <input 
