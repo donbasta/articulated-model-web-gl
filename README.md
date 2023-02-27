@@ -11,3 +11,7 @@
 - `yarn install` to install dependencies
 - `yarn start` to start dev server locally
 - model examples are available at [models](./models/) directory to upload
+
+## Current demo version
+
+[Demo](https://webgl.faddilafarras.me)
